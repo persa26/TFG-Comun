@@ -4,7 +4,7 @@ let users = require('../models/Users');
 const jwt = require('jsonwebtoken');
 
 async function getUsers(request, response, next) {
-    query = "SELECT * FROM Users";
+    query = "SELECT * FROM SystemUsers";
     if (request.params.id) query = query + ` WHERE id=${request.params.id}`;
 
     conn.query(query, (err, rows) => {
@@ -20,11 +20,11 @@ const postUser = (request, response, next) => {
     if (!request.body.password) return response.status(400).json({ success: false, message: 'No password' });
     if (!request.body.mail) return response.status(400).json({ success: false, message: 'No mail' });
 
-    conn.query(`select * from Users where mail='${request.body.mail}'`, (err, rows) => {
+    conn.query(`select * from SystemUsers where mail='${request.body.mail}'`, (err, rows) => {
         if (err) return response.status(400).json({ success: false, err });
         if (rows.length > 0) return response.status(400).json({ success: false, message: 'Mail already exists' });
         checkPostUsersData(request.body);
-        conn.query(`INSERT INTO Users (name, surname, password, mail, photo, admin, creationDate) 
+        conn.query(`INSERT INTO SystemUsers (name, surname, password, mail, photo, admin, creationDate) 
                 VALUES ('${users.name}', 
                 '${users.surname}', 
                 '${users.password}', 
@@ -38,7 +38,7 @@ const postUser = (request, response, next) => {
             });
     });
     checkPostUsersData(request.body);
-    conn.query(`INSERT INTO Users (name, surname, password, mail, photo, admin, creationDate) 
+    conn.query(`INSERT INTO SystemUsers (name, surname, password, mail, photo, admin, creationDate) 
         VALUES ('${users.name}', 
         '${users.surname}', 
         '${users.password}', 
@@ -60,7 +60,7 @@ const putUser = (request, response, next) => {
                     success: false, message: 'The only one who can modify a user is the user himself'
                 });
             } else {
-                query = "UPDATE Users SET "
+                query = "UPDATE SystemUsers SET "
                 if (!request.body.userId) return response.status(400).json({ success: false, message: 'No userId' });
                 if (!request.body.name && !request.body.surname && !request.body.password && !request.body.mail) return response.status(400).json({ success: false, message: 'No data to update' });
                 checkPutUsersData(request);
@@ -122,7 +122,7 @@ function chechIfItsAdmin(request, response) {
     helper.checkUser(decodedToken.id).then(result => {
         if (result) {
             if (checkAdmin(result.admin)) {
-                conn.query(`DELETE FROM Users WHERE id=${request.body.userId}`, (err, rows) => {
+                conn.query(`DELETE FROM SystemUsers WHERE id=${request.body.userId}`, (err, rows) => {
                     err ? response.status(500).json({ success: false, err, }) : response.json({ success: true, message: 'User deleted' });
                 });
             } else {

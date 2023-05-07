@@ -7,13 +7,13 @@ services:
       MYSQL_USER: admin
       MYSQL_PASSWORD: Welcome1
       MYSQL_ROOT_PASSWORD: Welcome1
-      MYSQL_DATABASE: rsocial
+      MYSQL_DATABASE: campusdb
     restart: always
   app:
     container_name: app
     build: ./app
     environment:
-      MYSQL_DATABASE: rsocial
+      MYSQL_DATABASE: campusdb
       MYSQL_USER: admin
       MYSQL_PASSWORD: Welcome1
       MYSQL_HOST: db

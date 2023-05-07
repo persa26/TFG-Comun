@@ -16,7 +16,7 @@
           <h2
             class="text-3xl font-bold text-center text-gray-800 leading-tight mb-6"
           >
-            Sign in
+            Sign in ah
           </h2>
           <form action @submit.prevent="login">
             <!-- Email input -->

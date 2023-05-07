@@ -6,6 +6,6 @@
         "host": "localhost",
         "user": "admin",
         "password": "Welcome1",
-        "database": "rsocial"
+        "database": "campusdb"
     }
 }

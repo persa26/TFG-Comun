@@ -8,7 +8,7 @@ const login = (request, response, next) => {
     if (!request.body.mail) {
         return response.status(400).json({ success: false, message: 'Please enter mail' });
     }
-    conn.query(`SELECT * FROM Users WHERE mail = '${request.body.mail}'`,
+    conn.query(`SELECT * FROM SystemUsers WHERE mail = '${request.body.mail}'`,
         (err, result) => {
             if (err) {
                 throw err;
