@@ -1,5 +1,5 @@
 
-# Red Social
+# TFG-Común
 
 TFG-Común es un proyecto de gestión de control de accesos que combina dos sistemas de identificación independientes: identificación por tarjeta RFID y reconocimiento facial mediante inteligencia artificial. Este proyecto ha sido desarrollado por dos autores diferentes, @Persa26 para el sistema de identificación por tarjeta RFID y @sesnaola para el sistema de reconocimiento facial. Ambos sistemas han sido desarrollados de forma independiente y se han integrado en este proyecto para su uso conjunto.
 
