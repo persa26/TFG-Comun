@@ -7,10 +7,6 @@ async function getStudents(request, response, next) {
     if (request.params.id) query = query + ` WHERE id=${request.params.id}`;
     if (request.query.rfid) query = query + ` WHERE rfid=${request.query.rfid}`;
 
-    console.log("request: ", request.params);
-    console.log("request query: ", request.query);
-    console.log("query: ", query);
-
     conn.query(query, (err, rows) => {
         if (!rows) return response.status(404).json({ success: false, message: 'No users found' });
         mapStudents(rows);
