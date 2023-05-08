@@ -25,7 +25,9 @@ router.post('/profile-image', usersController.postProfileImage);
 router.get('/posts', postsController.getPosts);
 router.post('/posts', postsController.postPosts);
 router.get('/students', studentsController.getStudents);
+router.get('/students/:id?', studentsController.getStudents);
 router.get('/students/:rfid?', studentsController.getStudents);
+// router.get('/studentsbyrfid/:id', studentsController.getStudentsByRFID);
 
 
 module.exports = router;

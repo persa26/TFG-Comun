@@ -4,7 +4,22 @@ let students = require('./../models/Students');
 
 async function getStudents(request, response, next) {
     query = "SELECT * FROM Students";
-    if (request.params.rfid) query = query + ` WHERE rfid=${request.params.rfid}`;
+    if (request.params.id) query = query + ` WHERE id=${request.params.id}`;
+    if (request.query.rfid) query = query + ` WHERE rfid=${request.query.rfid}`;
+
+    console.log("request: ", request.params);
+    console.log("request query: ", request.query);
+    console.log("query: ", query);
+
+    conn.query(query, (err, rows) => {
+        if (!rows) return response.status(404).json({ success: false, message: 'No users found' });
+        mapStudents(rows);
+        err ? response.status(500).json({ success: false, err, }) : response.json({ users }.users)
+    });
+};
+
+const getStudentsByRFID = (request, response, next) => {
+    query = `SELECT * FROM Students WHERE rfid=${request.params.rfid}`;
 
     conn.query(query, (err, rows) => {
         if (!rows) return response.status(404).json({ success: false, message: 'No users found' });
@@ -16,7 +31,7 @@ async function getStudents(request, response, next) {
 function mapStudents(value) {
     users = value.map(user => {
         return {
-            // id: user.id,
+            id: user.id,
             name: user.name,
             surname: user.surname,
             mail: user.mail,
@@ -26,4 +41,4 @@ function mapStudents(value) {
     });
 }
 
-module.exports = { getStudents };
+module.exports = { getStudents, getStudentsByRFID };
