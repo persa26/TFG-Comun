@@ -3,6 +3,7 @@ const router = express.Router();
 const usersController = require('./../controllers/UsersController');
 const authController = require('./../controllers/AuthController');
 const postsController = require('./../controllers/PostsController');
+const studentsController = require('./../controllers/StudentsController');
 const jwt = require('jsonwebtoken');
 
 router.post('/login', authController.login);
@@ -23,5 +24,8 @@ router.delete('/users', usersController.deleteUsers);
 router.post('/profile-image', usersController.postProfileImage);
 router.get('/posts', postsController.getPosts);
 router.post('/posts', postsController.postPosts);
+router.get('/students', studentsController.getStudents);
+router.get('/students/:rfid?', studentsController.getStudents);
+
 
 module.exports = router;
