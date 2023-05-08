@@ -1,3 +1,4 @@
+const e = require('express');
 const conn = require('./../db/dbConnection');
 let students = require('./../models/Students');
 // const { Students } = require('../models/Students');
@@ -8,33 +9,80 @@ async function getStudents(request, response, next) {
     if (request.query.rfid) query = query + ` WHERE rfid=${request.query.rfid}`;
 
     conn.query(query, (err, rows) => {
-        if (!rows) return response.status(404).json({ success: false, message: 'No users found' });
+        if (!rows) return response.status(404).json({ success: false, message: 'No students found' });
         mapStudents(rows);
-        err ? response.status(500).json({ success: false, err, }) : response.json({ users }.users)
+        err ? response.status(500).json({ success: false, err, }) : response.json({ students }.students)
     });
 };
 
-const getStudentsByRFID = (request, response, next) => {
-    query = `SELECT * FROM Students WHERE rfid=${request.params.rfid}`;
+const postStudent = async (request, response, next) => {
+    const { name, surname, mail, rfid = "", photo = "" } = request.body;
 
-    conn.query(query, (err, rows) => {
-        if (!rows) return response.status(404).json({ success: false, message: 'No users found' });
-        mapStudents(rows);
-        err ? response.status(500).json({ success: false, err, }) : response.json({ users }.users)
-    });
+    if (!name) return response.status(400).json({ success: false, message: "No name" });
+    if (!surname) return response.status(400).json({ success: false, message: "No surname" });
+    if (!mail) return response.status(400).json({ success: false, message: "No mail" });
+
+    try {
+        if ((await checkDuplicatedMail(mail)).length > 0) return response.status(400).json({ success: false, message: "Mail already exists" });
+        if (rfid !== "" && (await checkDuplicatedRFID(rfid)).length > 0) return response.status(400).json({ success: false, message: "RFID already exists" });
+        await insertNewStudent(name, surname, mail, photo, rfid);
+        return response.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        return response.status(500).json({ success: false, err });
+    }
 };
+
+async function insertNewStudent(name, surname, mail, photo, rfid) {
+    await new Promise((resolve, reject) => {
+        conn.query(
+            `INSERT INTO Students (name, surname, mail, photo, rfid) VALUES ('${name}', '${surname}', '${mail}', '${photo}', '${rfid}')`,
+            (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            }
+        );
+    });
+}
+
+async function checkDuplicatedRFID(rfid) {
+    return await new Promise((resolve, reject) => {
+        conn.query(`SELECT * FROM Students WHERE rfid='${rfid}'`, (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
+async function checkDuplicatedMail(mail) {
+    return await new Promise((resolve, reject) => {
+        conn.query(`SELECT * FROM Students WHERE mail='${mail}'`, (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
 
 function mapStudents(value) {
-    users = value.map(user => {
+    students = value.map(student => {
         return {
-            id: user.id,
-            name: user.name,
-            surname: user.surname,
-            mail: user.mail,
-            photo: user.photo,
-            rfid: user.rfid,
+            id: student.id,
+            name: student.name,
+            surname: student.surname,
+            mail: student.mail,
+            photo: student.photo,
+            rfid: student.rfid,
         };
     });
 }
 
-module.exports = { getStudents, getStudentsByRFID };
+module.exports = { getStudents, postStudent };

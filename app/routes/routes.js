@@ -7,7 +7,8 @@ const studentsController = require('./../controllers/StudentsController');
 const jwt = require('jsonwebtoken');
 
 router.post('/login', authController.login);
-router.post('/users', usersController.postUser);
+// router.post('/users', usersController.postUser);
+router.post('/students', studentsController.postStudent);
 
 router.use((request, response, next) => {
     if (!request.headers.authorization) return response.status(401).json({ success: false, message: 'No token provided' });

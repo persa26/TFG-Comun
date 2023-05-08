@@ -15,6 +15,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use('/api/v1/', routes);
+// app.use((req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', '*');
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+//   res.setHeader('Access-Control-Allow-Headers', '*');
+//   next();
+// });
 
 const listener = app.listen(process.env.PORT || 3080, () => {
   console.log('Listening on port ' + listener.address().port)

@@ -9,6 +9,8 @@ services:
       MYSQL_ROOT_PASSWORD: Welcome1
       MYSQL_DATABASE: campusdb
     restart: always
+    ports:
+      - "3306:3306"
   app:
     container_name: app
     build: ./app
