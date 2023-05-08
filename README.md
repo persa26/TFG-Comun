@@ -5,19 +5,19 @@ TFG-Común es un proyecto de gestión de control de accesos que combina dos sist
 
 ## Características
 
-*Gestión de usuarios con acceso al sistema.
-*Dos sistemas de identificación independientes: tarjeta RFID y reconocimiento facial mediante IA.
-*Registro de los accesos de los usuarios al sistema.
-*Panel de administración para la gestión de usuarios y accesos.
+* Gestión de usuarios con acceso al sistema.
+* Dos sistemas de identificación independientes: tarjeta RFID y reconocimiento facial mediante IA.
+* Registro de los accesos de los usuarios al sistema.
+* Panel de administración para la gestión de usuarios y accesos.
 
 ## Tecnologías
 
-*Node.js
-*Express
-*MySQL
-*React
-*TensorFlow
-*OpenCV
+* Node.js
+* Express
+* VueJS
+* MySQL
+* TensorFlow
+* OpenCV
 
 ## Instalación
 
@@ -77,5 +77,5 @@ Devuelve el usuario con la ID especificada
 
 ## Autores
 
-- [@sesnaola](https://github.com/sesnaola)
-- [@persa26](https://github.com/persa26)
+* [@sesnaola](https://github.com/sesnaola)
+* [@persa26](https://github.com/persa26)
