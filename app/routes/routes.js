@@ -28,6 +28,7 @@ router.post('/posts', postsController.postPosts);
 router.get('/students', studentsController.getStudents);
 router.get('/students/:id?', studentsController.getStudents);
 router.get('/students/:rfid?', studentsController.getStudents);
+router.put('/students', studentsController.putStudent);
 // router.get('/studentsbyrfid/:id', studentsController.getStudentsByRFID);
 
 

@@ -1,5 +1,5 @@
 const conn = require('../db/dbConnection');
-let helper = require('./../helpers/checkIfUserExists');
+let helper = require('../helpers/checkIfUserExists');
 let users = require('../models/Users');
 const jwt = require('jsonwebtoken');
 

@@ -1,7 +1,7 @@
 const { query } = require('express');
 const conn = require('./../db/dbConnection');
 let posts = require('./../models/Posts');
-let helper = require('./../helpers/checkIfUserExists');
+let helper = require('../helpers/checkIfUserExists');
 const { Users } = require('../models/Users');
 
 
