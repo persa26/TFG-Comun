@@ -28,7 +28,6 @@ const postStudent = async (request, response, next) => {
         await insertNewStudent(name, surname, mail, photo, rfid);
         return response.json({ success: true });
     } catch (err) {
-        console.error(err);
         return response.status(500).json({ success: false, err });
     }
 };
