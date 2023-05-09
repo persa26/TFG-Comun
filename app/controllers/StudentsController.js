@@ -77,6 +77,35 @@ async function updateStudent(id, name, surname, mail, photo, rfid) {
     });
 }
 
+async function deleteStudent(request, response, next) {
+
+    if (!request.params.id) return response.status(400).json({ success: false, message: "No id" });
+    id = request.params.id;
+
+    try {
+        const studentExists = await helper.checkStudent(id);
+        if (!studentExists) return response.status(404).json({ success: false, message: "Student not found" });
+
+        await deleteStudentById(id);
+        return response.json({ success: true });
+    } catch (err) {
+        return response.status(500).json({ success: false, err });
+    }
+}
+
+async function deleteStudentById(id) {
+    return new Promise((resolve, reject) => {
+        conn.query(`DELETE FROM Students WHERE id=${id}`, (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
+
 async function insertNewStudent(name, surname, mail, photo, rfid) {
     await new Promise((resolve, reject) => {
         conn.query(
@@ -129,4 +158,4 @@ function mapStudents(value) {
     });
 }
 
-module.exports = { getStudents, postStudent, putStudent };
+module.exports = { getStudents, postStudent, putStudent, deleteStudent };
