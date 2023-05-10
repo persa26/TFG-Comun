@@ -7,5 +7,9 @@
         "user": "admin",
         "password": "Welcome1",
         "database": "campusdb"
+    },
+    "syncIPFaceRecognition": {
+        "IP": "192.168.227.128",
+        "port": 80
     }
 }

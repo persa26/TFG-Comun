@@ -4,6 +4,7 @@ const usersController = require('./../controllers/UsersController');
 const authController = require('./../controllers/AuthController');
 const postsController = require('./../controllers/PostsController');
 const studentsController = require('./../controllers/StudentsController');
+const syncController = require('./../controllers/syncController');
 const jwt = require('jsonwebtoken');
 
 router.post('/login', authController.login);
@@ -30,6 +31,7 @@ router.get('/students/:id?', studentsController.getStudents);
 router.get('/students/:rfid?', studentsController.getStudents);
 router.put('/students', studentsController.putStudent);
 router.delete('/students/:id?', studentsController.deleteStudent);
+router.get('/syncdatafacerecognition?', syncController.syncDataWithFaceRecognitionSystem);
 // router.get('/studentsbyrfid/:id', studentsController.getStudentsByRFID);
 
 
