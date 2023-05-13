@@ -26,6 +26,14 @@ CREATE TABLE Students(
     PRIMARY KEY(id)
 );
 
+CREATE TABLE StudentsImage(
+    id int NOT NULL AUTO_INCREMENT,
+    imageLocation varchar(250) NOT NULL,
+    studentId int NOT NULL,
+    FOREIGN KEY (studentId) REFERENCES Students(id),
+    PRIMARY KEY(id)
+);
+
 -- CREATE TABLE Rooms(
 --     id int NOT NULL AUTO_INCREMENT,
 --     name varchar(50) NOT NULL,

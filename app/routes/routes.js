@@ -4,12 +4,11 @@ const usersController = require('./../controllers/UsersController');
 const authController = require('./../controllers/AuthController');
 const postsController = require('./../controllers/PostsController');
 const studentsController = require('./../controllers/StudentsController');
-const syncController = require('./../controllers/syncController');
+const syncController = require('../controllers/SyncController');
 const jwt = require('jsonwebtoken');
 
 router.post('/login', authController.login);
 // router.post('/users', usersController.postUser);
-router.post('/students', studentsController.postStudent);
 
 router.use((request, response, next) => {
     if (!request.headers.authorization) return response.status(401).json({ success: false, message: 'No token provided' });
@@ -29,9 +28,13 @@ router.post('/posts', postsController.postPosts);
 router.get('/students', studentsController.getStudents);
 router.get('/students/:id?', studentsController.getStudents);
 router.get('/students/:rfid?', studentsController.getStudents);
+router.post('/students', studentsController.postStudent);
 router.put('/students', studentsController.putStudent);
 router.delete('/students/:id?', studentsController.deleteStudent);
-router.get('/syncdatafacerecognition?', syncController.syncDataWithFaceRecognitionSystem);
+router.post('/students/studentsphotos', studentsController.postStudentsPhotos);
+router.get('/syncusersdatafacerecognition?', syncController.syncUsersDataWithFaceRecognitionSystem);
+router.get('/syncimagesdatafacerecognition?', syncController.syncImagesDataWithFaceRecognitionSystem);
+router.get('/migrateimages?', syncController.migrateImages);
 // router.get('/studentsbyrfid/:id', studentsController.getStudentsByRFID);
 
 

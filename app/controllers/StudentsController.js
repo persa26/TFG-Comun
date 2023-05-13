@@ -2,7 +2,6 @@ const e = require('express');
 const conn = require('./../db/dbConnection');
 let helper = require('../helpers/checkIfStudentExists');
 let students = require('./../models/Students');
-// const { Students } = require('../models/Students');
 
 async function getStudents(request, response, next) {
     query = "SELECT * FROM Students";
@@ -61,19 +60,31 @@ const putStudent = async (request, response, next) => {
     }
 };
 
+const postStudentsPhotos = async (request, response, next) => {
 
-async function updateStudent(id, name, surname, mail, photo, rfid) {
-    return new Promise((resolve, reject) => {
-        conn.query(
-            `UPDATE Students SET name='${name}', surname='${surname}', mail='${mail}', photo='${photo}', rfid='${rfid}' WHERE id=${id}`,
-            (err, rows) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(rows);
-                }
-            }
-        );
+    if (!request.body.userId) return response.status(400).json({ success: false, message: 'No userId' });
+    if (!request.files) return response.status(400).json({ success: false, message: 'No file uploaded' });
+    if (!request.files.image) return response.status(400).json({ success: false, message: 'No image uploaded' });
+
+    const { userId } = request.body;
+    const studentExists = await helper.checkStudent(userId);
+
+    if (!studentExists) return response.status(404).json({ success: false, message: "Student not found" });
+
+    await queryFileUpload(request, response);
+};
+
+async function queryFileUpload(request, response) {
+    const { userId } = request.body;
+    const { image } = request.files;
+
+    route = "user_" + userId + "_" + Date.now() + ".jpg";
+    image.mv('./idImages/' + route, function (err) {
+        if (err) return response.status(500).json({ success: false, err });
+        conn.query(`INSERT INTO StudentsImage (studentId, imageLocation) VALUES (${userId}, '${route}')`, (err, rows) => {
+            err ? response.status(500).json({ success: false, err, }) : response.json({ success: true, message: "Image uploaded" })
+        });
+
     });
 }
 
@@ -158,4 +169,4 @@ function mapStudents(value) {
     });
 }
 
-module.exports = { getStudents, postStudent, putStudent, deleteStudent };
+module.exports = { getStudents, postStudent, putStudent, deleteStudent, postStudentsPhotos };
