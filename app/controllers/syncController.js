@@ -18,7 +18,6 @@ async function syncUsersDataWithFaceRecognitionSystem(request, response, next) {
         headers: {
             'Content-Type': 'application/json',
             'Content-Length': postData.length,
-            // add any other headers you want to send here
         }
     };
 
@@ -40,24 +39,6 @@ async function syncUsersDataWithFaceRecognitionSystem(request, response, next) {
     postReq.end();
 }
 
-async function migrateImages() {
-    try {
-        // Retrieve image routes from database
-        const routes = await getRoutesFromDatabase();
-
-        // Loop over routes and migrate each image
-        for (let route of routes) {
-            const image = await axios.get(route); // GET request to retrieve image
-            const form = new FormData();
-            form.append('image', fs.createReadStream(image.data), { knownLength: image.headers['content-length'] }); // attach image to POST request
-            await axios.post('https://newapi.com/images', form, { headers: form.getHeaders() }); // POST request to new API to upload image
-        }
-
-        console.log('Image migration completed successfully.');
-    } catch (error) {
-        console.error('Error migrating images:', error);
-    }
-}
 
 function getStudentsData(response) {
     return new Promise((resolve, reject) => {
@@ -69,7 +50,6 @@ function getStudentsData(response) {
             }
             mapStudents(rows);
             resolve(JSON.stringify(students))
-            // return students;
         });
     });
 }
@@ -87,7 +67,6 @@ function mapStudents(value) {
     });
 }
 
-// // // // // // // // // // // // // // // // // // // // 
 const syncImagesDataWithFaceRecognitionSystem = async (request, response, next) => {
     const postData = await getStudentsImageData(response);
 
@@ -142,4 +121,4 @@ async function getStudentsImageData(response) {
 }
 
 
-module.exports = { syncUsersDataWithFaceRecognitionSystem, migrateImages, syncImagesDataWithFaceRecognitionSystem }
+module.exports = { syncUsersDataWithFaceRecognitionSystem, syncImagesDataWithFaceRecognitionSystem }
