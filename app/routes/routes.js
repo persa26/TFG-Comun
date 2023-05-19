@@ -1,8 +1,8 @@
 const express = require('express'); //import express
 const router = express.Router();
 const usersController = require('./../controllers/UsersController');
+const groupsController = require('./../controllers/GroupsController');
 const authController = require('./../controllers/AuthController');
-const postsController = require('./../controllers/PostsController');
 const studentsController = require('./../controllers/StudentsController');
 const syncController = require('../controllers/syncController');
 const jwt = require('jsonwebtoken');
@@ -18,13 +18,14 @@ router.use((request, response, next) => {
     });
 });
 
+// Users routes
 router.get('/users', usersController.getUsers);
 router.get('/users/:id?', usersController.getUsers);
 router.put('/users', usersController.putUser);
 router.delete('/users', usersController.deleteUsers);
 router.post('/profile-image', usersController.postProfileImage);
-router.get('/posts', postsController.getPosts);
-router.post('/posts', postsController.postPosts);
+
+// Students routes
 router.get('/students', studentsController.getStudents);
 router.get('/students/:id?', studentsController.getStudents);
 router.get('/students/:rfid?', studentsController.getStudents);
@@ -32,9 +33,18 @@ router.post('/students', studentsController.postStudent);
 router.put('/students', studentsController.putStudent);
 router.delete('/students/:id?', studentsController.deleteStudent);
 router.post('/students/studentsphotos', studentsController.postStudentsPhotos);
+
+// Sync user data with face recognition system
 router.get('/syncusersdatafacerecognition?', syncController.syncUsersDataWithFaceRecognitionSystem);
 router.get('/syncimagesdatafacerecognition?', syncController.syncImagesDataWithFaceRecognitionSystem);
 // router.get('/studentsbyrfid/:id', studentsController.getStudentsByRFID);
+
+// Groups routes
+router.get('/groups', groupsController.getGroups);
+router.get('/groups/:id?', groupsController.getGroup);
+router.post('/groups', groupsController.postGroup);
+router.put('/groups', groupsController.putGroup);
+router.delete('/groups/:id?', groupsController.deleteGroup);
 
 
 module.exports = router;
