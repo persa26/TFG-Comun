@@ -1,7 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const SocialNetwork = axios.create({
+const CampusDB = axios.create({
   baseURL: "http://localhost:3080/api/v1",
   withCredentials: false,
   headers: {
@@ -10,6 +10,7 @@ const SocialNetwork = axios.create({
     Authorization: `${Cookies.get("userToken")}`,
   },
 });
+
 
 export default {
   setUserLogged(token, userId) {
@@ -32,17 +33,16 @@ export default {
       mail,
       password,
     };
-    return SocialNetwork.post("/login", user);
+    return CampusDB.post("/login", user);
   },
   getUsers() {
-    return SocialNetwork.get("/users");
+    return CampusDB.get("/users");
   },
   getUser(userId) {
-    // return SocialNetwork.get(`/users?userId=${userId}`);
-    return SocialNetwork.get(`/users/${userId}`);
+    return CampusDB.get(`/users/${userId}`);
   },
   deleteUsers() {
-    return SocialNetwork.post("/users");
+    return CampusDB.post("/users");
   },
   register(name, surname, mail, password) {
     const users = {
@@ -51,18 +51,18 @@ export default {
       mail,
       password,
     };
-    return SocialNetwork.post("users", users);
+    return CampusDB.post("users", users);
   },
   publicar(userId, text, fd) {
     fd.set("userId", userId);
     fd.set("text", text);
-    return SocialNetwork.post("/posts", fd, {
+    return CampusDB.post("/posts", fd, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
   },
   getPosts() {
-    return SocialNetwork.get("/posts");
+    return CampusDB.get("/posts");
   },
 };

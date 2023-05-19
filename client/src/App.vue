@@ -1,11 +1,28 @@
 <template>
-  <router-view />
+  <div id="app">
+    <div v-if="isAutenticate" class="flex">
+      <div class="flex-none p-5">
+        <VerticalMenu />
+      </div>
+      <div class="flex-initial pt-10">
+        <router-view></router-view>
+      </div>
+    </div>
+    <LoginView v-if="!isAutenticate" />
+  </div>
 </template>
 
 <script>
+import VerticalMenu from './components/menu/VerticalMenu.vue'
+import LoginView from "@/views/LoginView.vue";
+import campusdb from "@/services/campusdb";
+
 export default {
-  components: {},
   name: "App",
+  data: () => ({
+    isAutenticate: campusdb.getUserLogged() !== undefined,
+  }),
+  components: { LoginView, VerticalMenu },
 };
 </script>
 
@@ -18,16 +35,6 @@ export default {
   color: #2c3e50;
 }
 
-nav {
-  padding: 30px;
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
 
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
 </style>

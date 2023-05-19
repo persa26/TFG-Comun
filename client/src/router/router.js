@@ -1,9 +1,8 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
-import RegisterView from "../views/RegisterView.vue";
-import PostAddView from "../views/PostAddView.vue";
-import PostsView from "../views/PostsView.vue";
+import RegisterView from "../views/AddUserView.vue";
+import AdminUsersListView from "../views/AdminUsersListView.vue";
 
 const routes = [
   {
@@ -22,14 +21,9 @@ const routes = [
     component: RegisterView,
   },
   {
-    path: "/posts/add",
-    name: "postadd",
-    component: PostAddView,
-  },
-  {
-    path: "/posts",
-    name: "posts",
-    component: PostsView,
+    path: "/users",
+    name: "users",
+    component: AdminUsersListView,
   },
 ];
 

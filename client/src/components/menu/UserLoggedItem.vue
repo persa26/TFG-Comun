@@ -14,7 +14,6 @@
           alt="avatar"
           class="rounded-full h-12 w-12 mr-2"
           style="
-            display: block;
             max-width: 50px;
             max-height: 50px;
             width: auto;
@@ -40,7 +39,7 @@
 </template>
 
 <script>
-import socialnetwork from "@/services/socialnetwork";
+import campusdb from "@/services/campusdb";
 export default {
   props: {
     post: {
@@ -51,7 +50,7 @@ export default {
   data() {
     return {
       // Get user from store
-      user: socialnetwork.getUser(socialnetwork.getUserLogged()).then((res) => {
+      user: campusdb.getUser(campusdb.getUserLogged()).then((res) => {
         this.user = res.data[0];
         console.log(this.user);
       }),
@@ -59,7 +58,7 @@ export default {
   },
   methods: {
     logout() {
-      socialnetwork.logout();
+      campusdb.logout();
       window.location.reload();
     },
   },

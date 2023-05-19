@@ -1,16 +1,16 @@
 <template>
   <div class="register">
-    <RegisterItem />
+    <AddUserItem />
   </div>
 </template>
 
 <script>
-import RegisterItem from "@/components/RegisterItem.vue";
+import AddUserItem from "@/components/AddAdminUserItem.vue";
 
 export default {
   name: "RegisterView",
   components: {
-    RegisterItem,
+    AddUserItem,
   },
 };
 </script>

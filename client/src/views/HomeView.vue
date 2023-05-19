@@ -1,31 +1,25 @@
 <template>
   <div class="home">
-    <div v-if="isAutenticate">
-      <NavBar />
-      <div class="home__content__body">
-        <PostsView />
+    <div class="home__content__body">
+        <!-- Welcome title in tailwind on the right of screen -->
+      <div class="home__content__body__welcome">
+        <h1 class="text-4xl font-bold text-gray-800">Welcome to Campus</h1>
       </div>
+      <!-- <PostsView /> -->
     </div>
-    <LoginView v-if="!isAutenticate" />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import LoginView from "@/views/LoginView.vue";
-import NavBar from "@/components/NavBar.vue";
-import PostsView from "./PostsView.vue";
-import socialnetwork from "@/services/socialnetwork";
+import campusdb from "@/services/campusdb";
 
 export default {
   name: "HomeView",
   data: () => ({
-    isAutenticate: socialnetwork.getUserLogged() !== undefined,
+    isAutenticate: campusdb.getUserLogged() !== undefined,
   }),
   components: {
-    LoginView,
-    NavBar,
-    PostsView,
   },
 };
 </script>
