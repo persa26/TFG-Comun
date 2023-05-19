@@ -17,7 +17,8 @@ export default {
     return {
       items: [
         { text: 'Home', to: '/' },
-        { text: 'Admin Users', to: '/users' },
+        { text: 'Students', to: '/students' },
+        { text: 'Users', to: '/users' },
       ],
       isAutenticate: campusdb.getUserLogged() !== undefined,
     }

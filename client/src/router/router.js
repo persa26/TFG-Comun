@@ -2,7 +2,7 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import RegisterView from "../views/AddUserView.vue";
-import AdminUsersListView from "../views/AdminUsersListView.vue";
+import UsersListView from "../views/UsersListView.vue";
 
 const routes = [
   {
@@ -23,7 +23,7 @@ const routes = [
   {
     path: "/users",
     name: "users",
-    component: AdminUsersListView,
+    component: UsersListView,
   },
 ];
 

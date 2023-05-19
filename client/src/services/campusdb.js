@@ -41,7 +41,7 @@ export default {
   getUser(userId) {
     return CampusDB.get(`/users/${userId}`);
   },
-  deleteUsers() {
+  deleteUser() {
     return CampusDB.post("/users");
   },
   register(name, surname, mail, password) {
@@ -53,16 +53,22 @@ export default {
     };
     return CampusDB.post("users", users);
   },
-  publicar(userId, text, fd) {
-    fd.set("userId", userId);
-    fd.set("text", text);
-    return CampusDB.post("/posts", fd, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+  getStudents() {
+    return CampusDB.get("/students");
   },
-  getPosts() {
-    return CampusDB.get("/posts");
+  getStudent(userId) {
+    return CampusDB.get(`/students/${userId}`);
   },
+  deleteStudent() {
+    return CampusDB.post("/students");
+  },
+  addStudent(name, surname, mail, password) {
+    const students = {
+      name,
+      surname,
+      mail,
+      password,
+    };
+    return CampusDB.post("students", students);
+  }
 };
