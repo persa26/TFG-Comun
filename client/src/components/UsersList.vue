@@ -67,7 +67,7 @@ export default {
   methods: {
     eliminar(index) {
       try {
-        if (!confirm("CONFIRMAR: Eliminar usuarios")) return;
+        if (!confirm("CONFIRMAR: Eliminar usuario")) return;
         this.usuarios.splice(index, 1);
         //llamar API para borrar usuario
       } catch (error) {

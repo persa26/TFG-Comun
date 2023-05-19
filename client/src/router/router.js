@@ -3,6 +3,7 @@ import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import RegisterView from "../views/AddUserView.vue";
 import UsersListView from "../views/UsersListView.vue";
+import StudentsListView from "../views/StudentsListView.vue";
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: "/users",
     name: "users",
     component: UsersListView,
+  },
+  {
+    path: "/students",
+    name: "students",
+    component: StudentsListView,
   },
 ];
 
