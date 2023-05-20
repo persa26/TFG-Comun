@@ -19,6 +19,7 @@ export default {
         { text: 'Home', to: '/' },
         { text: 'Students', to: '/students' },
         { text: 'Users', to: '/users' },
+        { text: 'Groups', to: '/groups' },
       ],
       isAutenticate: campusdb.getUserLogged() !== undefined,
     }

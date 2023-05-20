@@ -4,7 +4,7 @@ const usersController = require('./../controllers/UsersController');
 const groupsController = require('./../controllers/GroupsController');
 const authController = require('./../controllers/AuthController');
 const studentsController = require('./../controllers/StudentsController');
-const syncController = require('../controllers/syncController');
+const syncController = require('../controllers/SyncController');
 const jwt = require('jsonwebtoken');
 
 router.post('/login', authController.login);
@@ -43,7 +43,7 @@ router.get('/syncimagesdatafacerecognition?', syncController.syncImagesDataWithF
 router.get('/groups', groupsController.getGroups);
 router.get('/groups/:id?', groupsController.getGroup);
 router.post('/groups', groupsController.postGroup);
-router.put('/groups', groupsController.putGroup);
+router.put('/groups/:id?', groupsController.putGroup);
 router.delete('/groups/:id?', groupsController.deleteGroup);
 
 

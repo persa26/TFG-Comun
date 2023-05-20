@@ -38,10 +38,18 @@ Groups.create = (newGroup, result) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
-            return
+            return;
+        } else {
+            if (res.insertId != undefined && newGroup) {
+                let data = { id: res.insertId, ...newGroup };
+                //En la linea de encima no pilla el ID y no se porque, por eso lo asigno de nuevo aqui abajo. 
+                data.id = res.insertId;
+                result(null, data);
+            }
         }
     });
 };
+
 
 Groups.updateById = (id, group, result) => {
     conn.query(

@@ -70,5 +70,26 @@ export default {
       password,
     };
     return CampusDB.post("students", students);
+  },
+  getGroups() {
+    return CampusDB.get("/groups");
+  },
+  getGroup(groupId) {
+    return CampusDB.get(`/groups/${groupId}`);
+  },
+  deleteGroup(groupId) {
+    console.log("groupId", groupId)
+    return CampusDB.delete(`/groups/${groupId}`);
+  },
+  addGroup(name) {
+    const groups = { name };
+    return CampusDB.post("groups", groups);
+  },
+  updateGroup(id, name) {
+    const groups = { id, name };
+    console.log("groupId", id)
+    console.log("groups", groups)
+    return CampusDB.put(`/groups/${id}`, groups);
   }
 };
+
