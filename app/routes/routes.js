@@ -35,8 +35,9 @@ router.delete('/students/:id?', studentsController.deleteStudent);
 router.post('/students/studentsphotos', studentsController.postStudentsPhotos);
 
 // Sync user data with face recognition system
-router.get('/syncusersdatafacerecognition?', syncController.syncUsersDataWithFaceRecognitionSystem);
+router.get('/syncstudentsdatafacerecognition?', syncController.syncStudentsDataWithFaceRecognitionSystem);
 router.get('/syncimagesdatafacerecognition?', syncController.syncImagesDataWithFaceRecognitionSystem);
+router.get('/syncgroupsdatafacerecognition?', syncController.syncGroupsDataWithFaceRecognitionSystem);
 // router.get('/studentsbyrfid/:id', studentsController.getStudentsByRFID);
 
 // Groups routes

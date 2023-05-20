@@ -6,14 +6,14 @@ const FormData = require('form-data');
 const fs = require('fs');
 const path = require('path');
 
-async function syncUsersDataWithFaceRecognitionSystem(request, response, next) {
+async function syncStudentsDataWithFaceRecognitionSystem(request, response, next) {
 
     const postData = await getStudentsData(response);
 
     const options = {
         hostname: config.syncIPFaceRecognition.IP,
         port: config.syncIPFaceRecognition.port,
-        path: '/syncdata',
+        path: '/syncusersdata',
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -120,5 +120,63 @@ async function getStudentsImageData(response) {
     });
 }
 
+async function syncGroupsDataWithFaceRecognitionSystem(request, response, next) {
+    const postData = await getGroupsData(response);
 
-module.exports = { syncUsersDataWithFaceRecognitionSystem, syncImagesDataWithFaceRecognitionSystem }
+    console.log("postData: ", postData);
+
+    const options = {
+        hostname: config.syncIPFaceRecognition.IP,
+        port: config.syncIPFaceRecognition.port,
+        path: '/syncgroupsdata',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': postData.length,
+        }
+    };
+
+    const postReq = http.request(options, (postRes) => {
+        let data = '';
+        postRes.on('data', (chunk) => {
+            data += chunk;
+        });
+        postRes.on('end', () => {
+            response.status(200).json({ success: true, message: "Syncing group data with Face Recognition System" });
+        });
+    });
+
+    postReq.on('error', (error) => {
+        response.status(500).json({ success: false, message: "Error syncing group data with Face Recognition System" });
+    });
+
+    postReq.write(postData);
+    postReq.end();
+}
+
+async function getGroupsData(response) {
+    return new Promise((resolve, reject) => {
+        let query = "SELECT * FROM `Groups`";
+        conn.query(query, (err, groups) => {
+            if (!groups) {
+                return response.status(404).json({ success: false, message: 'No groups found' });
+            }
+            query = "SELECT * FROM GroupStudents";
+            conn.query(query, (err, groupStudents) => {
+                if (!groupStudents) {
+                    return response.status(404).json({ success: false, message: 'No group students found' });
+                }
+                const data = {
+                    groups: groups.map(group => ({ id: group.id, name: group.name })),
+                    groupUsers: groupStudents.map(groupStudent => ({ userId: groupStudent.studentId, groupId: groupStudent.groupId }))
+                };
+                resolve(JSON.stringify(data));
+            });
+        });
+    });
+}
+
+
+
+
+module.exports = { syncStudentsDataWithFaceRecognitionSystem, syncImagesDataWithFaceRecognitionSystem, syncGroupsDataWithFaceRecognitionSystem }
