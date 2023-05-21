@@ -54,3 +54,9 @@ jspm_packages/
 
 # mac
 .DS_Store
+
+# images
+.*.png
+.*.jpg
+.*.jpeg
+.*.webp
