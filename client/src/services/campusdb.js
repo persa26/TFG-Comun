@@ -78,7 +78,6 @@ export default {
     return CampusDB.get(`/groups/${groupId}`);
   },
   deleteGroup(groupId) {
-    console.log("groupId", groupId)
     return CampusDB.delete(`/groups/${groupId}`);
   },
   addGroup(name) {
@@ -87,9 +86,18 @@ export default {
   },
   updateGroup(id, name) {
     const groups = { id, name };
-    console.log("groupId", id)
-    console.log("groups", groups)
     return CampusDB.put(`/groups/${id}`, groups);
+  },
+  syncData(type) {
+    switch (type) {
+      case "syncgroupsdatafacerecognition":
+        return CampusDB.get("/syncgroupsdatafacerecognition");
+      case "syncimagesdatafacerecognition":
+        return CampusDB.get("/syncimagesdatafacerecognition");
+      case "syncstudentsdatafacerecognition":
+        return CampusDB.get("/syncstudentsdatafacerecognition");
+      default:
+    }
   }
 };
 

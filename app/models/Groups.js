@@ -8,11 +8,9 @@ const Groups = function (group) {
 Groups.getAll = (result) => {
     conn.query("SELECT * FROM `Groups`", (err, res) => {
         if (err) {
-            console.log("error: ", err);
             result(null, err);
             return
         }
-        console.log("groups: ", res);
         result(null, res);
     });
 };
@@ -20,12 +18,10 @@ Groups.getAll = (result) => {
 Groups.findById = (groupId, result) => {
     conn.query("SELECT * FROM `Groups` WHERE id = ?", groupId, (err, res) => {
         if (err) {
-            console.log("error: ", err);
             result(err, null);
             return
         }
         if (res.length) {
-            console.log("found group: ", res[0]);
             result(null, res[0]);
             return
         }
@@ -36,7 +32,6 @@ Groups.findById = (groupId, result) => {
 Groups.create = (newGroup, result) => {
     conn.query("INSERT INTO `Groups` SET ?", newGroup, (err, res) => {
         if (err) {
-            console.log("error: ", err);
             result(err, null);
             return;
         } else {
@@ -57,7 +52,6 @@ Groups.updateById = (id, group, result) => {
         [group.name, id],
         (err, res) => {
             if (err) {
-                console.log("error: ", err);
                 result(null, err);
                 return
             }
@@ -65,7 +59,6 @@ Groups.updateById = (id, group, result) => {
                 result({ kind: "not_found" }, null);
                 return
             }
-            console.log("updated group: ", { id: id, ...group });
             result(null, { id: id, ...group });
         }
     );
@@ -74,7 +67,6 @@ Groups.updateById = (id, group, result) => {
 Groups.remove = (id, result) => {
     conn.query("DELETE FROM `Groups` WHERE id = ?", id, (err, res) => {
         if (err) {
-            console.log("error: ", err);
             result(null, err);
             return
         }
@@ -82,7 +74,6 @@ Groups.remove = (id, result) => {
             result({ kind: "not_found" }, null);
             return
         }
-        console.log("deleted group with id: ", id);
         result(null, res);
     });
 };

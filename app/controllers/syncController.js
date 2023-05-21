@@ -1,8 +1,6 @@
 const conn = require('../db/dbConnection');
 const config = require('./../config/settings');
 const http = require('http');
-const axios = require('axios');
-const FormData = require('form-data');
 const fs = require('fs');
 const path = require('path');
 
@@ -123,7 +121,6 @@ async function getStudentsImageData(response) {
 async function syncGroupsDataWithFaceRecognitionSystem(request, response, next) {
     const postData = await getGroupsData(response);
 
-    console.log("postData: ", postData);
 
     const options = {
         hostname: config.syncIPFaceRecognition.IP,

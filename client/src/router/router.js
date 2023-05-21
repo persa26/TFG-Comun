@@ -5,6 +5,7 @@ import RegisterView from "../views/AddUserView.vue";
 import UsersListView from "../views/UsersListView.vue";
 import StudentsListView from "../views/StudentsListView.vue";
 import GroupsListView from "../views/GroupsListView.vue";
+import IdentificationListView from "../views/IdentificationListView.vue";
 
 const routes = [
   {
@@ -36,6 +37,11 @@ const routes = [
     path: "/groups",
     name: "groups",
     component: GroupsListView,
+  },
+  {
+    path: "/identification",
+    name: "identification",
+    component: IdentificationListView,
   },
 ];
 

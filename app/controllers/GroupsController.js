@@ -37,20 +37,16 @@ exports.postGroup = (request, response) => {
             message: "Content can not be empty!"
         });
     }
-    console.log("request: ", request.body);
     const group = new Groups({
         name: request.body.name
     });
 
     Groups.create(group, (err, data) => {
-        console.log("Data: ", data);
         if (err) {
-            console.log("Error: ", err);
             response.status(500).send({
                 message: err.message || "Some error occurred while creating the group."
             });
         } else {
-            console.log("Data: ", data);
             response.send(data);
         }
     });
