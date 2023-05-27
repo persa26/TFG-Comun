@@ -63,10 +63,6 @@ export default {
     return CampusDB.delete(`/students/${studentId}`);
   },
   addStudent(newStudent) {
-    // const students = { newStudent };
-
-
-    console.log(newStudent);
     return CampusDB.post("/students", newStudent);
   },
   updateStudent(id, name, surname, mail, rfid) {

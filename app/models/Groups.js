@@ -65,7 +65,7 @@ Groups.updateById = (id, group, result) => {
 };
 
 Groups.remove = (id, result) => {
-    conn.query("DELETE FROM `Groups` WHERE id = ?", id, (err, res) => {
+    conn.query("DELETE FROM GroupLocations WHERE groupId = ?", id, (err, res) => {
         if (err) {
             result(null, err);
             return
@@ -74,7 +74,7 @@ Groups.remove = (id, result) => {
             result({ kind: "not_found" }, null);
             return
         }
-        conn.query("DELETE FROM GroupLocations WHERE groupId = ?", id, (err, res) => {
+        conn.query("DELETE FROM `Groups` WHERE id = ?", id, (err, res) => {
             if (err) {
                 result(null, err);
                 return
