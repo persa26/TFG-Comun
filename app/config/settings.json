@@ -9,7 +9,7 @@
         "database": "campusdb"
     },
     "syncIPFaceRecognition": {
-        "IP": "127.0.0.1",
-        "port": 8000
+        "IP": "192.168.32.142",
+        "port": 80
     }
 }

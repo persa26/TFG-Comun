@@ -4,7 +4,7 @@
       <div class="flex-none p-5">
         <VerticalMenu />
       </div>
-      <div class="flex-initial pt-10">
+      <div class="flex-grow p-4 pt-10">
         <router-view></router-view>
       </div>
     </div>

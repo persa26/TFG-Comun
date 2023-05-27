@@ -52,7 +52,6 @@ export default {
       // Get user from store
       user: campusdb.getUser(campusdb.getUserLogged()).then((res) => {
         this.user = res.data[0];
-        console.log(this.user);
       }),
     };
   },

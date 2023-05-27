@@ -1,8 +1,7 @@
 --
 -- Table
 --
-
-USE campusdb; 
+USE campusdb;
 
 CREATE TABLE SystemUsers(
     id int NOT NULL AUTO_INCREMENT,
@@ -49,41 +48,24 @@ CREATE TABLE GroupStudents(
     PRIMARY KEY(id)
 );
 
--- CREATE TABLE Rooms(
---     id int NOT NULL AUTO_INCREMENT,
---     name varchar(50) NOT NULL,
---     floor varchar(50) NOT NULL,
---     PRIMARY KEY(id)
--- );
+CREATE TABLE Locations(
+    id int NOT NULL AUTO_INCREMENT,
+    locationName varchar(50) NOT NULL,
+    facialRecognitionRequired BOOL NOT NULL,
+    rfidRequired BOOL NOT NULL,
+    PRIMARY KEY(id)
+);
 
--- CREATE TABLE IdentificationSystems (
---     id int NOT NULL AUTO_INCREMENT,
---     name varchar(50) NOT NULL,
---     type varchar(50) NOT NULL,
---     roomId varchar(250),
---     FOREIGN KEY (roomId) REFERENCES Rooms(id),
---     PRIMARY KEY(id)
--- );
-
--- CREATE TABLE Subjects(
---     id int NOT NULL AUTO_INCREMENT,
---     name varchar(50) NOT NULL,
---     credits integer(50) NOT NULL,
---     course varchar(250),
---     roomId int NOT,
---     FOREIGN KEY (roomId) REFERENCES Rooms(id),
---     PRIMARY KEY(id)
--- );
-
--- CREATE TABLE StudentSubject(
---     id int NOT NULL AUTO_INCREMENT,
---     studentId int NOT NULL,
---     subjectId int NOT NULL,
---     FOREIGN KEY (studentId) REFERENCES Students(id),
---     FOREIGN KEY (subjectId) REFERENCES Subjects(id),
---     PRIMARY KEY(id)
--- );
-
+CREATE TABLE GroupLocations(
+    id int NOT NULL AUTO_INCREMENT,
+    groupId int NOT NULL,
+    locationId int NOT NULL,
+    entryTime time NOT NULL,
+    exitTime time NOT NULL,
+    FOREIGN KEY (groupId) REFERENCES `Groups`(id),
+    FOREIGN KEY (locationId) REFERENCES Locations(id),
+    PRIMARY KEY(id)
+);
 
 -- Create inserts for the tables
 INSERT INTO
@@ -142,50 +124,48 @@ VALUES
     );
 
 INSERT INTO
-    `Groups` (
-        name
-    )
+    `Groups` (name)
 VALUES
-    (
-        '1A'
-    );
+    ('1A');
 
 INSERT INTO
-    `Groups` (
-        name
-    )
+    `Groups` (name)
 VALUES
-    (
-        '2A'
-    );
+    ('2A');
 
 INSERT INTO
-    GroupStudents (
-        studentId,
-        groupId
-    )
+    GroupStudents (studentId, groupId)
 VALUES
-    (
-        1,
-        1
-    );
+    (1, 1);
 
 INSERT INTO
-    GroupStudents (
-        studentId,
-        groupId
+    GroupStudents (studentId, groupId)
+VALUES
+    (2, 2);
+
+-- Insert locations
+INSERT INTO
+    Locations (
+        locationName,
+        facialRecognitionRequired,
+        rfidRequired
     )
 VALUES
-    (
-        2,
-        2
-    );
+    ('Biblioteca', TRUE, FALSE),
+    ('Laboratorio', FALSE, TRUE),
+    ('Aula 101', TRUE, TRUE);
 
-
-
+-- Insert group locations
+INSERT INTO
+    GroupLocations (groupId, locationId, entryTime, exitTime)
+VALUES
+    (1, 1, '08:00:00', '20:00:00'),
+    (1, 2, '09:00:00', '18:00:00'),
+    (2, 3, '08:30:00', '14:30:00');
 
 ALTER USER 'admin' IDENTIFIED WITH mysql_native_password BY 'Welcome1';
 
 flush privileges;
 
-SET SESSION sql_mode = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+SET
+    SESSION sql_mode = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
