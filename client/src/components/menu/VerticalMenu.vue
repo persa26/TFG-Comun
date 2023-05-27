@@ -21,6 +21,8 @@ export default {
         { text: 'Users', to: '/users' },
         { text: 'Groups', to: '/groups' },
         { text: 'Identification', to: '/identification' },
+        { text: 'Locations', to: '/locations' },
+        { text: 'Group Locations', to: '/grouplocations' },
       ],
       isAutenticate: campusdb.getUserLogged() !== undefined,
     }

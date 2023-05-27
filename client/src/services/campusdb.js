@@ -59,17 +59,20 @@ export default {
   getStudent(userId) {
     return CampusDB.get(`/students/${userId}`);
   },
-  deleteStudent() {
-    return CampusDB.post("/students");
+  deleteStudent(studentId) {
+    return CampusDB.delete(`/students/${studentId}`);
   },
-  addStudent(name, surname, mail, password) {
-    const students = {
-      name,
-      surname,
-      mail,
-      password,
-    };
-    return CampusDB.post("students", students);
+  addStudent(newStudent) {
+    // const students = { newStudent };
+
+
+    console.log(newStudent);
+    return CampusDB.post("/students", newStudent);
+  },
+  updateStudent(id, name, surname, mail, rfid) {
+    const student = { id, name, surname, mail, rfid };
+    return CampusDB.put(`/students`, student);
+
   },
   getGroups() {
     return CampusDB.get("/groups");
@@ -88,6 +91,42 @@ export default {
     const groups = { id, name };
     return CampusDB.put(`/groups/${id}`, groups);
   },
+  ///////
+  getLocations() {
+    return CampusDB.get("/locations");
+  },
+  getLocation(locationId) {
+    return CampusDB.get(`/locations/${locationId}`);
+  },
+  deleteLocation(locationId) {
+    return CampusDB.delete(`/locations/${locationId}`);
+  },
+  addLocation(locationName, facialRecognitionRequired, rfidRequired) {
+    const locations = { locationName, facialRecognitionRequired, rfidRequired };
+    return CampusDB.post("locations", locations);
+  },
+  updateLocation(id, locationName, facialRecognitionRequired, rfidRequired) {
+    const locations = { id, locationName, facialRecognitionRequired, rfidRequired };
+    return CampusDB.put(`/locations/${id}`, locations);
+  },
+  getGroupLocations() {
+    return CampusDB.get("/groupLocations");
+  },
+  getGroupLocation(groupLocationId) {
+    return CampusDB.get(`/groupLocations/${groupLocationId}`);
+  },
+  deleteGroupLocation(groupLocationId) {
+    return CampusDB.delete(`/groupLocations/${groupLocationId}`);
+  },
+  addGroupLocation(groupId, locationId, entryTime, exitTime) {
+    const groupLocations = { groupId, locationId, entryTime, exitTime };
+    return CampusDB.post("groupLocations", groupLocations);
+  },
+  updateGroupLocation(id, groupId, locationId, entryTime, exitTime) {
+    const groupLocations = { id, groupId, locationId, entryTime, exitTime };
+    return CampusDB.put(`/groupLocations/${id}`, groupLocations);
+  },
+  ///////
   syncData(type) {
     switch (type) {
       case "syncgroupsdatafacerecognition":

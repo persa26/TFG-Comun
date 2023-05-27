@@ -4,7 +4,9 @@ const usersController = require('./../controllers/UsersController');
 const groupsController = require('./../controllers/GroupsController');
 const authController = require('./../controllers/AuthController');
 const studentsController = require('./../controllers/StudentsController');
-const syncController = require('../controllers/SyncController');
+const syncController = require('./../controllers/SyncController');
+const locationsController = require('./../controllers/LocationsController');
+const groupLocationsController = require('./../controllers/GroupLocationsController');
 const jwt = require('jsonwebtoken');
 
 router.post('/login', authController.login);
@@ -46,6 +48,20 @@ router.get('/groups/:id?', groupsController.getGroup);
 router.post('/groups', groupsController.postGroup);
 router.put('/groups/:id?', groupsController.putGroup);
 router.delete('/groups/:id?', groupsController.deleteGroup);
+
+// Locations routes
+router.get('/locations', locationsController.getLocations);
+router.get('/locations/:id?', locationsController.getLocation);
+router.post('/locations', locationsController.postLocation);
+router.put('/locations/:id?', locationsController.putLocation);
+router.delete('/locations/:id?', locationsController.deleteLocation);
+
+// GroupLocations routes
+router.get('/groupLocations', groupLocationsController.getGroupLocations);
+router.get('/groupLocations/:id?', groupLocationsController.getGroupLocation);
+router.post('/groupLocations', groupLocationsController.postGroupLocation);
+router.put('/groupLocations/:id?', groupLocationsController.putGroupLocation);
+router.delete('/groupLocations/:id?', groupLocationsController.deleteGroupLocation);
 
 
 module.exports = router;

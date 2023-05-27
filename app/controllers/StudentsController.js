@@ -16,7 +16,12 @@ async function getStudents(request, response, next) {
 };
 
 const postStudent = async (request, response, next) => {
+    console.log("Request", request.body)
     const { name, surname, mail, rfid = "", photo = "" } = request.body;
+
+    // console.log("name", name);
+    // console.log("surname", surname);
+    // console.log("mail", mail);
 
     if (!name) return response.status(400).json({ success: false, message: "No name" });
     if (!surname) return response.status(400).json({ success: false, message: "No surname" });
@@ -51,7 +56,6 @@ const putStudent = async (request, response, next) => {
                 return response.status(400).json({ success: false, message: "RFID already exists" });
             }
         }
-
         await updateStudent(parseInt(id), name, surname, mail, photo, rfid);
         return response.json({ success: true });
 
@@ -121,6 +125,20 @@ async function insertNewStudent(name, surname, mail, photo, rfid) {
     await new Promise((resolve, reject) => {
         conn.query(
             `INSERT INTO Students (name, surname, mail, photo, rfid) VALUES ('${name}', '${surname}', '${mail}', '${photo}', '${rfid}')`,
+            (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            }
+        );
+    });
+}
+async function updateStudent(id, name, surname, mail, photo, rfid) {
+    return new Promise((resolve, reject) => {
+        conn.query(
+            `UPDATE Students SET name='${name}', surname='${surname}', mail='${mail}', photo='${photo}', rfid='${rfid}' WHERE id=${id}`,
             (err, rows) => {
                 if (err) {
                     reject(err);
