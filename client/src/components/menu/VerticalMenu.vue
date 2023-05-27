@@ -5,6 +5,12 @@
   </ul>
 </template>
 
+<style>
+.menu-item-text {
+  white-space: pre-line;
+}
+</style>
+
 <script>
 import MenuItem from './MenuItem.vue';
 import UserItem from "./UserLoggedItem.vue";
@@ -17,12 +23,12 @@ export default {
     return {
       items: [
         { text: 'Home', to: '/' },
-        { text: 'Students', to: '/students' },
-        { text: 'Users', to: '/users' },
-        { text: 'Groups', to: '/groups' },
-        { text: 'Identification', to: '/identification' },
-        { text: 'Locations', to: '/locations' },
-        { text: 'Group Locations', to: '/grouplocations' },
+        { text: 'Admin', to: '/users' },
+        { text: 'Estudiantes', to: '/students' },
+        { text: 'Grupos', to: '/groups' },
+        { text: 'Ubicaciones', to: '/locations' },
+        { text: 'Asignación de grupos a localizaciones', to: '/grouplocations' },
+        { text: 'Identificación', to: '/identification' },
       ],
       isAutenticate: campusdb.getUserLogged() !== undefined,
     }

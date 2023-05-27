@@ -101,13 +101,14 @@ export default {
   deleteLocation(locationId) {
     return CampusDB.delete(`/locations/${locationId}`);
   },
-  addLocation(locationName, facialRecognitionRequired, rfidRequired) {
-    const locations = { locationName, facialRecognitionRequired, rfidRequired };
-    return CampusDB.post("locations", locations);
+  addLocation(newLocation) {
+    // const locations = { locationName, facialRecognitionRequired, rfidRequired };
+    return CampusDB.post("locations", newLocation);
   },
-  updateLocation(id, locationName, facialRecognitionRequired, rfidRequired) {
-    const locations = { id, locationName, facialRecognitionRequired, rfidRequired };
-    return CampusDB.put(`/locations/${id}`, locations);
+  updateLocation(location) {
+    // const locations = { id, locationName, facialRecognitionRequired, rfidRequired };
+    console.log(location)
+    return CampusDB.put(`/locations/${location.id}`, location);
   },
   getGroupLocations() {
     return CampusDB.get("/groupLocations");
@@ -118,13 +119,14 @@ export default {
   deleteGroupLocation(groupLocationId) {
     return CampusDB.delete(`/groupLocations/${groupLocationId}`);
   },
-  addGroupLocation(groupId, locationId, entryTime, exitTime) {
-    const groupLocations = { groupId, locationId, entryTime, exitTime };
-    return CampusDB.post("groupLocations", groupLocations);
+  addGroupLocation(groupLocation) {
+    // const groupLocations = { groupId, locationId, entryTime, exitTime };
+    return CampusDB.post("groupLocations", groupLocation);
   },
-  updateGroupLocation(id, groupId, locationId, entryTime, exitTime) {
-    const groupLocations = { id, groupId, locationId, entryTime, exitTime };
-    return CampusDB.put(`/groupLocations/${id}`, groupLocations);
+  updateGroupLocation(groupLocations) {
+    // const groupLocations = { id, groupId, locationId, entryTime, exitTime };
+    delete groupLocations.editable;
+    return CampusDB.put(`/groupLocations/${groupLocations.id}`, groupLocations);
   },
   ///////
   syncData(type) {

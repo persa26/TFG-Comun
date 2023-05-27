@@ -68,18 +68,26 @@ Locations.updateById = (id, location, result) => {
 };
 
 Locations.remove = (id, result) => {
-    conn.query("DELETE FROM Locations WHERE id = ?", id, (err, res) => {
+    conn.query("DELETE FROM GroupLocations WHERE locationId = ?", id, (err, res) => {
         if (err) {
             result(null, err);
             return
         }
-        if (res.affectedRows == 0) {
-            result({ kind: "not_found" }, null);
-            return
-        }
-        result(null, res);
+        conn.query("DELETE FROM Locations WHERE id = ?", id, (err, res) => {
+            if (err) {
+                result(null, err);
+                return
+            }
+            if (res.affectedRows == 0) {
+                result({ kind: "not_found" }, null);
+                return
+            }
+            result(null, res);
+        });
     });
 };
+
+
 
 
 module.exports = Locations

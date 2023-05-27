@@ -74,7 +74,13 @@ Groups.remove = (id, result) => {
             result({ kind: "not_found" }, null);
             return
         }
-        result(null, res);
+        conn.query("DELETE FROM GroupLocations WHERE groupId = ?", id, (err, res) => {
+            if (err) {
+                result(null, err);
+                return
+            }
+            result(null, res);
+        });
     });
 };
 

@@ -16,12 +16,7 @@ async function getStudents(request, response, next) {
 };
 
 const postStudent = async (request, response, next) => {
-    console.log("Request", request.body)
     const { name, surname, mail, rfid = "", photo = "" } = request.body;
-
-    // console.log("name", name);
-    // console.log("surname", surname);
-    // console.log("mail", mail);
 
     if (!name) return response.status(400).json({ success: false, message: "No name" });
     if (!surname) return response.status(400).json({ success: false, message: "No surname" });
