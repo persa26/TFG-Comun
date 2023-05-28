@@ -9,9 +9,15 @@ const locationsController = require('./../controllers/LocationsController');
 const groupLocationsController = require('./../controllers/GroupLocationsController');
 const jwt = require('jsonwebtoken');
 
-router.post('/login', authController.login);
-// router.post('/users', usersController.postUser);
+const path = require('path');
+router.get('/students/imageurl/:imageName?', (req, res) => {
+    const imageName = req.params.imageName;
+    const imagePath = path.join(__dirname, '..', 'idImages', imageName);
+    res.sendFile(imagePath);
+});
 
+
+router.post('/login', authController.login);
 router.use((request, response, next) => {
     if (!request.headers.authorization) return response.status(401).json({ success: false, message: 'No token provided' });
     jwt.verify(request.headers.authorization, 'secret', (err, decoded) => {
@@ -19,6 +25,7 @@ router.use((request, response, next) => {
         next();
     });
 });
+
 
 // Users routes
 router.get('/users', usersController.getUsers);
@@ -35,6 +42,8 @@ router.post('/students', studentsController.postStudent);
 router.put('/students', studentsController.putStudent);
 router.delete('/students/:id?', studentsController.deleteStudent);
 router.post('/students/studentsphotos', studentsController.postStudentsPhotos);
+router.get('/students/studentsphotos/:id?', studentsController.getStudentsPhotos);
+router.delete('/students/studentsphotos/:id?', studentsController.deleteStudentsPhotos);
 
 // Sync user data with face recognition system
 router.get('/syncstudentsdatafacerecognition?', syncController.syncStudentsDataWithFaceRecognitionSystem);
@@ -62,6 +71,11 @@ router.get('/groupLocations/:id?', groupLocationsController.getGroupLocation);
 router.post('/groupLocations', groupLocationsController.postGroupLocation);
 router.put('/groupLocations/:id?', groupLocationsController.putGroupLocation);
 router.delete('/groupLocations/:id?', groupLocationsController.deleteGroupLocation);
+
+
+
+// test images
+
 
 
 module.exports = router;

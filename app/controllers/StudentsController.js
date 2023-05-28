@@ -60,7 +60,6 @@ const putStudent = async (request, response, next) => {
 };
 
 const postStudentsPhotos = async (request, response, next) => {
-
     if (!request.body.userId) return response.status(400).json({ success: false, message: 'No userId' });
     if (!request.files) return response.status(400).json({ success: false, message: 'No file uploaded' });
     if (!request.files.image) return response.status(400).json({ success: false, message: 'No image uploaded' });
@@ -72,6 +71,33 @@ const postStudentsPhotos = async (request, response, next) => {
 
     await queryFileUpload(request, response);
 };
+
+const getStudentsPhotos = async (request, response, next) => {
+    if (!request.params.id) return response.status(400).json({ success: false, message: 'No id' });
+
+    const { id } = request.params;
+    const studentExists = await helper.checkStudent(id);
+
+    if (!studentExists) return response.status(404).json({ success: false, message: "Student not found" });
+
+    conn.query(`SELECT * FROM StudentsImage WHERE studentId=${id}`, (err, rows) => {
+        if (!rows) return response.status(404).json({ success: false, message: 'No images found' });
+        err ? response.status(500).json({ success: false, err, }) : response.json({ rows })
+    });
+};
+
+const deleteStudentsPhotos = async (request, response, next) => {
+    if (!request.params.id) return response.status(400).json({ success: false, message: 'No id' });
+
+    const { id } = request.params;
+
+    conn.query(`DELETE FROM StudentsImage WHERE id=${id}`, (err, rows) => {
+        if (!rows) return response.status(404).json({ success: false, message: 'No images found' });
+        err ? response.status(500).json({ success: false, err, }) : response.json({ rows })
+    });
+};
+
+
 
 async function queryFileUpload(request, response) {
     const { userId } = request.body;
@@ -88,20 +114,26 @@ async function queryFileUpload(request, response) {
 }
 
 async function deleteStudent(request, response, next) {
-
+    console.log("inside deleteStudent")
     if (!request.params.id) return response.status(400).json({ success: false, message: "No id" });
     id = request.params.id;
 
     try {
         const studentExists = await helper.checkStudent(id);
         if (!studentExists) return response.status(404).json({ success: false, message: "Student not found" });
-
+        await deletePhotosByStudentId(id);
         await deleteStudentById(id);
         return response.json({ success: true });
     } catch (err) {
         return response.status(500).json({ success: false, err });
     }
 }
+
+const deletePhotosByStudentId = async (studentId) => {
+    conn.query(`DELETE FROM StudentsImage WHERE studentId=${studentId}`, (err, rows) => {
+        if (err) throw err;
+    });
+};
 
 async function deleteStudentById(id) {
     return new Promise((resolve, reject) => {
@@ -114,7 +146,6 @@ async function deleteStudentById(id) {
         });
     });
 }
-
 
 async function insertNewStudent(name, surname, mail, photo, rfid) {
     await new Promise((resolve, reject) => {
@@ -182,4 +213,4 @@ function mapStudents(value) {
     });
 }
 
-module.exports = { getStudents, postStudent, putStudent, deleteStudent, postStudentsPhotos };
+module.exports = { getStudents, postStudent, putStudent, deleteStudent, postStudentsPhotos, getStudentsPhotos, deleteStudentsPhotos };

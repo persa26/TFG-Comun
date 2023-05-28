@@ -70,6 +70,31 @@ export default {
     return CampusDB.put(`/students`, student);
 
   },
+  postRecognitionImage(id, image) {
+    const formData = new FormData();
+    formData.append("userId", id);
+    formData.append("image", image);
+
+    return CampusDB.post(`/students/studentsphotos`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
+
+  getUserImages(userId) {
+    return CampusDB.get(`/students/studentsphotos/${userId}`);
+  },
+
+  getRecognitionImage(imageurl) {
+    return CampusDB.get(`/students/imageurl/${imageurl}`);
+  },
+
+  deleteRecognitionImage(imageId) {
+    return CampusDB.delete(`/students/studentsphotos/${imageId}`);
+  },
+
+
   getGroups() {
     return CampusDB.get("/groups");
   },
@@ -98,12 +123,9 @@ export default {
     return CampusDB.delete(`/locations/${locationId}`);
   },
   addLocation(newLocation) {
-    // const locations = { locationName, facialRecognitionRequired, rfidRequired };
     return CampusDB.post("locations", newLocation);
   },
   updateLocation(location) {
-    // const locations = { id, locationName, facialRecognitionRequired, rfidRequired };
-    console.log(location)
     return CampusDB.put(`/locations/${location.id}`, location);
   },
   getGroupLocations() {
@@ -116,15 +138,12 @@ export default {
     return CampusDB.delete(`/groupLocations/${groupLocationId}`);
   },
   addGroupLocation(groupLocation) {
-    // const groupLocations = { groupId, locationId, entryTime, exitTime };
     return CampusDB.post("groupLocations", groupLocation);
   },
   updateGroupLocation(groupLocations) {
-    // const groupLocations = { id, groupId, locationId, entryTime, exitTime };
     delete groupLocations.editable;
     return CampusDB.put(`/groupLocations/${groupLocations.id}`, groupLocations);
   },
-  ///////
   syncData(type) {
     switch (type) {
       case "syncgroupsdatafacerecognition":
@@ -137,4 +156,3 @@ export default {
     }
   }
 };
-

@@ -78,10 +78,46 @@
               Editar
             </button>
             <button v-if="!student.editing"
-              class="bg-red-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-full"
+              class="bg-red-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-full mr-2"
               @click="removeStudent(index)">
               Eliminar
             </button>
+
+
+            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full mr-2"
+              @click="openUploadModal(index)">Subir imagen</button>
+
+            <div v-if="showUploadModal" class="modal">
+              <div class="modal-content">
+                <span class="close" @click="showUploadModal = false">×</span>
+                <h2>Subir imagen</h2>
+                <input type="file" ref="fileInput" />
+                <!-- <input type="file" ref="fileInput" @change="handleFileChange" /> -->
+
+                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
+                  @click="uploadImage()">Enviar</button>
+              </div>
+            </div>
+
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+              @click="getUserImages(student.id)">
+              Ver imágenes
+            </button>
+
+            <div v-if="showImageModal" class="modal">
+              <div class="modal-content">
+                <span class="close" @click="showImageModal = false">×</span>
+                <h2>Imágenes del usuario</h2>
+                <div class="image-grid">
+                  <div v-for="image in userImages" :key="image.id" class="image-container">
+                    <img :src="image.url" alt="User image" class="image" :class="{ 'selected': isSelectedImage(image) }"
+                      @click="toggleImageSelection(image)">
+                  </div>
+                </div>
+                <button v-if="selectedImages.length > 0" class="delete-image-button"
+                  @click="removeSelectedImages">Eliminar</button>
+              </div>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -91,18 +127,18 @@
 
 <script>
 import campusdb from "@/services/campusdb";
+
 export default {
   data() {
     return {
-      fields: ["id", "name", "surname", "mail", "rfid", "action"],
-      id: "",
-      name: "",
-      surname: "",
-      mail: "",
-      photo: "",
-      rfid: "",
       students: [],
       showAddStudentForm: false,
+      showUploadModal: false,
+      uploadImages: [],
+      uploadedImages: [],
+      selectedImages: [],
+      userImages: [],
+      showImageModal: false,
       newStudent: {
         name: '',
         surname: '',
@@ -114,24 +150,18 @@ export default {
   mounted() {
     campusdb.getStudents().then((res) => (this.students = res.data));
   },
+
   methods: {
     addStudent() {
-      // Create a new student object with the entered information
       const newStudent = {
         id: this.students.length + 1,
         ...this.newStudent,
         editing: false,
-        photo: "https://i.pravatar.cc/100?u=" + Date.now() // Generate a random avatar URL
+        photo: "https://i.pravatar.cc/100?u=" + Date.now()
       };
 
-      // Add the new student to the beginning of the list
       this.students.unshift(newStudent);
-      console.log("newStudent", newStudent)
-
-      // Call the API to add the new student to the database
       campusdb.addStudent(newStudent).then(() => {
-        // Handle successful addition of the new student
-        // Reset the new student form
         this.newStudent = {
           name: '',
           surname: '',
@@ -139,22 +169,15 @@ export default {
           rfid: '',
         };
         this.showAddStudentForm = false;
-      }).catch((error) => {
-        console.log(error);
-        // Handle error while adding the new student
-      });
+      }).catch((error) => { console.error(error); });
     },
 
     removeStudent(index) {
-      try {
-        if (!confirm("CONFIRMAR: Eliminar estudiante")) return;
-        const studentId = this.students[index].id;
-        campusdb.deleteStudent(studentId).then(() => {
-          this.students.splice(index, 1);
-        })
-      } catch (error) {
-        console.log(error);
-      }
+      if (!confirm("CONFIRMAR: Eliminar estudiante")) return;
+      const studentId = this.students[index].id;
+      campusdb.deleteStudent(studentId).then(() => {
+        this.students.splice(index, 1);
+      })
     },
     editStudent(index) {
       this.students[index].editing = true;
@@ -166,11 +189,8 @@ export default {
     },
     saveStudent(index) {
       this.students[index].editing = false;
-
       const { id: studentId, name: studentName, surname: studentSurname, mail: studentMail, rfid: studentRfid } = this.students[index];
-
       campusdb.updateStudent(studentId, studentName, studentSurname, studentMail, studentRfid).then(() => {
-        // Actualizar los datos del estudiante en la lista
         this.students[index].name = studentName;
         this.students[index].surname = studentSurname;
         this.students[index].mail = studentMail;
@@ -179,12 +199,169 @@ export default {
     },
     cancelEditStudent(index) {
       this.students[index].editing = false;
-
       const properties = ['name', 'surname', 'mail', 'rfid'];
       for (const prop of properties) {
         this.students[index][prop] = this.students[index]['original' + prop.charAt(0).toUpperCase() + prop.slice(1)];
       }
     },
+
+    openUploadModal(index) {
+      this.currentStudentIndex = index;
+      this.showUploadModal = true;
+    },
+    // handleFileChange(event) {
+    //   const selectedFiles = event.target.files;
+    //   console.log(selectedFiles);
+    // },
+    uploadImage() {
+      const file = this.$refs.fileInput[this.students.length - 1].files[0];
+      const newImage = {
+        file,
+        url: URL.createObjectURL(file),
+      };
+      this.uploadImages.push(newImage);
+      this.showUploadModal = false;
+      campusdb.postRecognitionImage(this.students[this.currentStudentIndex].id, file).then(() => {
+        this.uploadedImages.push(newImage);
+
+      }).catch((error) => { console.error(error); });
+    },
+
+    getUserImages(userId) {
+      campusdb.getUserImages(userId)
+        .then((res) => {
+          this.userImages = res.data.rows;
+          this.userImages.forEach((image) => {
+            image.url = `http://localhost:3080/api/v1/students/imageurl/${image.imageLocation}`
+
+          });
+          this.showImageModal = true;
+        })
+        .catch((error) => { console.error(error); });
+    },
+    isSelectedImage(image) {
+      return this.selectedImages.includes(image);
+    },
+
+    toggleImageSelection(image) {
+      if (this.isSelectedImage(image)) {
+        const index = this.selectedImages.indexOf(image);
+        this.selectedImages.splice(index, 1);
+      } else {
+        this.selectedImages.push(image);
+      }
+    },
+
+    removeSelectedImages() {
+      if (!confirm("CONFIRMAR: Eliminar imágenes")) return;
+      this.selectedImages.forEach((image) => {
+        campusdb.deleteRecognitionImage(image.id).then(() => {
+          const index = this.userImages.indexOf(image);
+          this.userImages.splice(index, 1);
+        })
+      });
+    }
   },
 };
 </script>
+<style>
+.modal {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+  max-width: 500px;
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  color: #333;
+  border-radius: 10px;
+}
+
+.modal-content h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.image-container {
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 10px;
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.image-container {
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 10px;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.image.selected {
+  border: 2px solid #ff0000;
+  box-shadow: 0 0 5px #ff0000;
+}
+
+.delete-image-button {
+  background-color: #ff0000;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-top: 20px;
+  float: right;
+}
+
+
+.modal-button {
+  background-color: #ff0000;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 20px;
+  border-radius: 5px;
+}
+</style>
