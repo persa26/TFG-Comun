@@ -112,7 +112,6 @@ export default {
     const groups = { id, name };
     return CampusDB.put(`/groups/${id}`, groups);
   },
-  ///////
   getLocations() {
     return CampusDB.get("/locations");
   },
@@ -154,5 +153,20 @@ export default {
         return CampusDB.get("/syncstudentsdatafacerecognition");
       default:
     }
-  }
+  },
+  faceRecognition(file) {
+    let formData = new FormData();
+    formData.append('file', file);
+
+    return CampusDB.post('/facerecognition', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+      .then(response => response.data)
+      .catch(error => {
+        throw error;
+      });
+  },
+
 };

@@ -7,6 +7,7 @@ const studentsController = require('./../controllers/StudentsController');
 const syncController = require('./../controllers/SyncController');
 const locationsController = require('./../controllers/LocationsController');
 const groupLocationsController = require('./../controllers/GroupLocationsController');
+const identificationController = require('./../controllers/IdentificationController');
 const jwt = require('jsonwebtoken');
 
 const path = require('path');
@@ -15,7 +16,6 @@ router.get('/students/imageurl/:imageName?', (req, res) => {
     const imagePath = path.join(__dirname, '..', 'idImages', imageName);
     res.sendFile(imagePath);
 });
-
 
 router.post('/login', authController.login);
 router.use((request, response, next) => {
@@ -50,6 +50,9 @@ router.get('/syncstudentsdatafacerecognition?', syncController.syncStudentsDataW
 router.get('/syncimagesdatafacerecognition?', syncController.syncImagesDataWithFaceRecognitionSystem);
 router.get('/syncgroupsdatafacerecognition?', syncController.syncGroupsDataWithFaceRecognitionSystem);
 // router.get('/studentsbyrfid/:id', studentsController.getStudentsByRFID);
+
+// Identification routes
+router.post('/facerecognition', identificationController.faceRecognition)
 
 // Groups routes
 router.get('/groups', groupsController.getGroups);

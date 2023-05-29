@@ -1,5 +1,7 @@
 const e = require('express');
 const conn = require('./../db/dbConnection');
+const fs = require('fs');
+const path = require('path');
 let helper = require('../helpers/checkIfStudentExists');
 let students = require('./../models/Students');
 
@@ -88,15 +90,25 @@ const getStudentsPhotos = async (request, response, next) => {
 
 const deleteStudentsPhotos = async (request, response, next) => {
     if (!request.params.id) return response.status(400).json({ success: false, message: 'No id' });
-
+    console.log(request.params.id)
     const { id } = request.params;
 
-    conn.query(`DELETE FROM StudentsImage WHERE id=${id}`, (err, rows) => {
-        if (!rows) return response.status(404).json({ success: false, message: 'No images found' });
-        err ? response.status(500).json({ success: false, err, }) : response.json({ rows })
+    conn.query(`SELECT imageLocation FROM StudentsImage WHERE id=${id}`, (err, rows) => {
+        if (err) return response.status(500).json({ success: false, err });
+        if (!rows || rows.length === 0) return response.status(404).json({ success: false, message: 'No images found' });
+
+        console.log(rows)
+        const imagePath = path.join('./idImages/', rows[0].imageLocation);
+        console.log(imagePath);
+        fs.unlink(imagePath, (err) => {
+            if (err) return response.status(500).json({ success: false, err });
+            conn.query(`DELETE FROM StudentsImage WHERE id=${id}`, (err, rows) => {
+                if (err) return response.status(500).json({ success: false, err });
+                response.json({ rows });
+            });
+        });
     });
 };
-
 
 
 async function queryFileUpload(request, response) {
