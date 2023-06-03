@@ -8,6 +8,7 @@ const syncController = require('./../controllers/SyncController');
 const locationsController = require('./../controllers/LocationsController');
 const groupLocationsController = require('./../controllers/GroupLocationsController');
 const identificationController = require('./../controllers/IdentificationController');
+const syncUsersService = require('./../services/SyncUsersService');
 const jwt = require('jsonwebtoken');
 
 const path = require('path');
@@ -18,13 +19,13 @@ router.get('/students/imageurl/:imageName?', (req, res) => {
 });
 
 router.post('/login', authController.login);
-router.use((request, response, next) => {
-    if (!request.headers.authorization) return response.status(401).json({ success: false, message: 'No token provided' });
-    jwt.verify(request.headers.authorization, 'secret', (err, decoded) => {
-        if (err) return response.status(401).json({ success: false, message: 'Failed to authenticate token.' });
-        next();
-    });
-});
+// router.use((request, response, next) => {
+//     // if (!request.headers.authorization) return response.status(401).json({ success: false, message: 'No token provided' });
+//     // jwt.verify(request.headers.authorization, 'secret', (err, decoded) => {
+//     //     if (err) return response.status(401).json({ success: false, message: 'Failed to authenticate token.' });
+//     //     next();
+//     // });
+// });
 
 
 // Users routes
@@ -68,14 +69,15 @@ router.post('/locations', locationsController.postLocation);
 router.put('/locations/:id?', locationsController.putLocation);
 router.delete('/locations/:id?', locationsController.deleteLocation);
 
+// Sync user data
+router.get('/locations/:id/sync', syncUsersService.syncUsers);
+
 // GroupLocations routes
 router.get('/groupLocations', groupLocationsController.getGroupLocations);
 router.get('/groupLocations/:id?', groupLocationsController.getGroupLocation);
 router.post('/groupLocations', groupLocationsController.postGroupLocation);
 router.put('/groupLocations/:id?', groupLocationsController.putGroupLocation);
 router.delete('/groupLocations/:id?', groupLocationsController.deleteGroupLocation);
-
-
 
 // test images
 

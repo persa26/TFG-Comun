@@ -29,6 +29,20 @@ Groups.findById = (groupId, result) => {
     });
 };
 
+Groups.findByIds = (groupIds, result) => {
+    conn.query("SELECT * FROM `Groups` WHERE id IN (?)", [groupIds], (err, res) => {
+        if (err) {
+            result(err, null);
+            return
+        }
+        if (res.length) {
+            result(null, res);
+            return
+        }
+        result({ kind: "not_found" }, null);
+    });
+};
+
 Groups.create = (newGroup, result) => {
     conn.query("INSERT INTO `Groups` SET ?", newGroup, (err, res) => {
         if (err) {
