@@ -83,9 +83,6 @@ exports.syncUsers = (request, response) => {
             }
         }
     });
-
-
-    
 };
 
 // function to make a post request to the server with the json object as body

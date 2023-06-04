@@ -10,6 +10,7 @@ const groupLocationsController = require('./../controllers/GroupLocationsControl
 const identificationController = require('./../controllers/IdentificationController');
 const groupStudentsController = require('./../controllers/GroupStudentsController');
 const syncUsersService = require('./../services/SyncUsersService');
+const userCanAccessService = require('./../services/UserCanAccessService');
 const jwt = require('jsonwebtoken');
 
 const path = require('path');
@@ -20,13 +21,13 @@ router.get('/students/imageurl/:imageName?', (req, res) => {
 });
 
 router.post('/login', authController.login);
-router.use((request, response, next) => {
-    // if (!request.headers.authorization) return response.status(401).json({ success: false, message: 'No token provided' });
-    // jwt.verify(request.headers.authorization, 'secret', (err, decoded) => {
-    //     if (err) return response.status(401).json({ success: false, message: 'Failed to authenticate token.' });
-    //     next();
-    // });
-});
+// router.use((request, response, next) => {
+//     // if (!request.headers.authorization) return response.status(401).json({ success: false, message: 'No token provided' });
+//     // jwt.verify(request.headers.authorization, 'secret', (err, decoded) => {
+//     //     if (err) return response.status(401).json({ success: false, message: 'Failed to authenticate token.' });
+//     //     next();
+//     // });
+// });
 
 
 // Users routes
@@ -72,6 +73,9 @@ router.delete('/locations/:id?', locationsController.deleteLocation);
 
 // Sync user data
 router.get('/locations/:id/sync', syncUsersService.syncUsers);
+
+// Sync user data
+router.get('/students/:studentId/locations/:locationId/access/:accesMethod', userCanAccessService.userCanAccess);
 
 // GroupLocations routes
 router.get('/groupLocations', groupLocationsController.getGroupLocations);
