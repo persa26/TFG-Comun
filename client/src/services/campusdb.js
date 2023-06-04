@@ -146,34 +146,53 @@ export default {
     return CampusDB.put(`/groupLocations/${groupLocations.id}`, groupLocations);
   },
 
+  getStudentGroups() {
+    return CampusDB.get("/groupStudents");
+  },
+  getStudentGroup(studentGroupId) {
+    return CampusDB.get(`/groupStudents/${studentGroupId}`);
+  },
+  deleteStudentGroup(studentGroupId) {
+    return CampusDB.delete(`/groupStudents/${studentGroupId}`);
+  },
+  addStudentGroup(studentGroup) {
+    return CampusDB.post("groupStudents", studentGroup);
+  },
+  updateStudentGroup(studentId, studentGroup) {
+    delete studentGroup.editable;
+    return CampusDB.put(`/groupStudents/${studentId}`, studentGroup);
+  },
+
+
+
   sendSyncData(locationId) {
     return CampusDB.get(`/locations/${locationId}/sync`);
   },
 
-  syncData(type) {
-    switch (type) {
-      case "syncgroupsdatafacerecognition":
-        return CampusDB.get("/syncgroupsdatafacerecognition");
-      case "syncimagesdatafacerecognition":
-        return CampusDB.get("/syncimagesdatafacerecognition");
-      case "syncstudentsdatafacerecognition":
-        return CampusDB.get("/syncstudentsdatafacerecognition");
-      default:
-    }
-  },
-  faceRecognition(file) {
-    let formData = new FormData();
-    formData.append('file', file);
+  // syncData(type) {
+  //   switch (type) {
+  //     case "syncgroupsdatafacerecognition":
+  //       return CampusDB.get("/syncgroupsdatafacerecognition");
+  //     case "syncimagesdatafacerecognition":
+  //       return CampusDB.get("/syncimagesdatafacerecognition");
+  //     case "syncstudentsdatafacerecognition":
+  //       return CampusDB.get("/syncstudentsdatafacerecognition");
+  //     default:
+  //   }
+  // },
+  // faceRecognition(file) {
+  //   let formData = new FormData();
+  //   formData.append('file', file);
 
-    return CampusDB.post('/facerecognition', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-      .then(response => response.data)
-      .catch(error => {
-        throw error;
-      });
-  },
+  //   return CampusDB.post('/facerecognition', formData, {
+  //     headers: {
+  //       'Content-Type': 'multipart/form-data',
+  //     },
+  //   })
+  //     .then(response => response.data)
+  //     .catch(error => {
+  //       throw error;
+  //     });
+  // }
 
 };

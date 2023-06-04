@@ -43,7 +43,7 @@ exports.getGroupStudentsByGroupId = (request, response) => {
     });
 }
 
-exports.postGroupStudent = (request, response) => {
+exports.create = (request, response) => {
     if (!request.body) {
         response.status(400).send({
             message: "Content can not be empty!"
@@ -93,7 +93,7 @@ exports.putGroupStudent = (request, response) => {
 }
 
 exports.deleteGroupStudent = (request, response) => {
-    GroupStudents.remove(request.params.id, (err, data) => {
+    GroupStudents.deleteGroupStudent(request.params.id, (err, data) => {
         if (err) {
             if (err.kind === "not_found") {
                 response.status(404).send({

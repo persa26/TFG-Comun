@@ -84,7 +84,7 @@ router.delete('/groupLocations/:id?', groupLocationsController.deleteGroupLocati
 
 router.get('/groupStudents', groupStudentsController.getGroupStudents);
 router.get('/groupStudents/:id?', groupStudentsController.getGroupStudent);
-router.post('/groupStudents', groupStudentsController.postGroupStudent);
+router.post('/groupStudents', groupStudentsController.create);
 router.put('/groupStudents/:id?', groupStudentsController.putGroupStudent);
 router.delete('/groupStudents/:id?', groupStudentsController.deleteGroupStudent);
 

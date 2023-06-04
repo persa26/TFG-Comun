@@ -4,131 +4,101 @@
       Lista de estudiantes por grupo
     </h1>
     <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
-      @click="showAddGroupLocationForm = true">
-      Añadir ubicación de grupo
+      @click="showAddStudentGroupForm = true">
+      Añadir estudiante a grupo
     </button>
     <table class="w-full">
       <thead class="bg-gray-50 border-b-2 border-gray-200">
         <tr>
-          <th class="p-4 text-sm font-semibold tracking-wide text-left">Nº</th>
+          <th class="p-4 text-sm font-semibold tracking-wide text-left">
+            ID
+          </th>
+          <th class="p-4 text-sm font-semibold tracking-wide text-left">
+            Nombre del estudiante
+          </th>
           <th class="p-4 text-sm font-semibold tracking-wide text-left">
             Nombre del grupo
-          </th>
-          <th class="p-4 text-sm font-semibold tracking-wide text-left">
-            Nombre de la ubicación
-          </th>
-          <th class="p-4 text-sm font-semibold tracking-wide text-left">
-            Hora de entrada
-          </th>
-          <th class="p-4 text-sm font-semibold tracking-wide text-left">
-            Hora de salida
           </th>
           <th class="p-4 text-sm font-semibold tracking-wide text-left">Acción</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-if="showAddGroupLocationForm" class="bg-gray-50">
-          <td class="p-4 text-sm text-gray-700">{{ groupLocations.length + 1 }}</td>
+        <tr v-for="(studentGroup, index) in studentGroups" :key="studentGroup.id">
           <td class="p-4 text-sm text-gray-700">
-            <select v-model="newGroupLocation.groupId">
-              <option v-for="group in groups" :value="group.id" :key="group.id">{{
-                group.name
-              }}</option>
-            </select>
+            {{ studentGroup.id }}
           </td>
           <td class="p-4 text-sm text-gray-700">
-            <select v-model="newGroupLocation.locationId">
-              <option v-for="location in locations" :value="location.id" :key="location.id">
-                {{ location.locationName }}
+            <template v-if="!studentGroup.editable">
+              {{ getStudentName(studentGroup.studentId) }}
+            </template>
+            <template v-else>
+              <select v-model="studentGroup.studentId" class="border-2 border-gray-300 p-2 w-full">
+                <option v-for="student in students" :key="student.id" :value="student.id">
+                  {{ student.name }}
+                </option>
+              </select>
+            </template>
+          </td>
+          <td class="p-4 text-sm text-gray-700">
+            <template v-if="!studentGroup.editable">
+              {{ getGroupName(studentGroup.groupId) }}
+            </template>
+            <template v-else>
+              <select v-model="studentGroup.groupId" class="border-2 border-gray-300 p-2 w-full">
+                <option v-for="group in groups" :key="group.id" :value="group.id">
+                  {{ group.name }}
+                </option>
+              </select>
+            </template>
+          </td>
+          <td class="p-4 text-sm text-gray-700">
+            <template v-if="!studentGroup.editable">
+              <button class="bg-cyan-800 hover:bg-cyan-500 text-white font-bold py-2 px-4 rounded-full mr-2"
+                @click="editStudentGroup(studentGroup)">
+                Editar
+              </button>
+              <button class="bg-red-800 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-full mr-2"
+                @click="removeStudentGroup(index)">
+                Eliminar
+              </button>
+            </template>
+            <template v-else>
+              <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full mr-2"
+                @click="saveStudentGroup(studentGroup)">
+                Guardar
+              </button>
+              <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
+                @click="cancelEditStudentGroup(studentGroup)">
+                Cancelar
+              </button>
+            </template>
+          </td>
+        </tr>
+        <tr v-if="showAddStudentGroupForm">
+          <td class="p-4 text-sm text-gray-700">
+            #
+          </td>
+          <td class="p-4 text-sm text-gray-700">
+            <select v-model="newStudentGroups.studentId" class="border-2 border-gray-300 p-2 w-full">
+              <option v-for="student in students" :key="student.id" :value="student.id">
+                {{ student.name }}
               </option>
             </select>
           </td>
           <td class="p-4 text-sm text-gray-700">
-            <template v-if="showAddGroupLocationForm">
-              <select v-model="newGroupLocation.entryTime">
-                <option v-for="time in timeOptions" :value="time" :key="time">{{ time }}</option>
-              </select>
-            </template>
+            <select v-model="newStudentGroups.groupId" class="border-2 border-gray-300 p-2 w-full">
+              <option v-for="group in groups" :key="group.id" :value="group.id">
+                {{ group.name }}
+              </option>
+            </select>
           </td>
           <td class="p-4 text-sm text-gray-700">
-            <template v-if="showAddGroupLocationForm">
-              <select v-model="newGroupLocation.exitTime">
-                <option v-for="time in timeOptions" :value="time" :key="time">{{ time }}</option>
-              </select>
-            </template>
-          </td>
-          <td class="p-4 text-sm text-gray-700">
-            <button @click="addGroupLocation"
-              class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded-full mr-2">
-              Añadir
+            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full"
+              @click="addStudentGroup">
+              Crear
             </button>
-            <button @click="showAddGroupLocationForm = false"
-              class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-full">
-              Cancelar
-            </button>
-          </td>
-        </tr>
-        <tr class="bg-gray-50" v-for="(groupLocation, index) in groupLocations" :key="groupLocation.id">
-          <td class="p-4 text-sm text-gray-700">{{ groupLocation.id }}</td>
-          <td class="p-4 text-sm text-gray-700">
-            <template v-if="groupLocation.editable">
-              <select v-model="groupLocation.groupId">
-                <option v-for="group in groups" :value="group.id" :key="group.id">{{
-                  group.name
-                }}</option>
-              </select>
-            </template>
-            <template v-else>{{ getGroupName(groupLocation.groupId) }}</template>
-          </td>
-          <td class="p-4 text-sm text-gray-700">
-            <template v-if="groupLocation.editable">
-              <select v-model="groupLocation.locationId">
-                <option v-for="location in locations" :value="location.id" :key="location.id">
-                  {{ location.locationName }}
-                </option>
-              </select>
-            </template>
-            <template v-else>{{ getLocationName(groupLocation.locationId) }}</template>
-          </td>
-
-          <td class="p-4 text-sm text-gray-700">
-            <template v-if="groupLocation.editable">
-              <select v-model="groupLocation.entryTime">
-                <option v-for="time in timeOptions" :value="time" :key="time">{{ time }}</option>
-              </select>
-            </template>
-            <template v-else>{{ groupLocation.entryTime }}</template>
-          </td>
-          <td class="p-4 text-sm text-gray-700">
-            <template v-if="groupLocation.editable">
-              <select v-model="groupLocation.exitTime">
-                <option v-for="time in timeOptions" :value="time" :key="time">{{ time }}</option>
-              </select>
-            </template>
-            <template v-else>{{ groupLocation.exitTime }}</template>
-          </td>
-
-          <td class="p-4 text-sm text-gray-700">
-            <template v-if="groupLocation.editable">
-              <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full mr-2"
-                @click="saveGroupLocation(groupLocation)">
-                Guardar
-              </button>
-            </template>
-            <template v-else>
-              <button class="bg-cyan-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-full mr-2"
-                @click="editGroupLocation(groupLocation)">
-                Editar
-              </button>
-            </template>
-            <button v-if="!groupLocation.editable"
-              class="bg-red-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-full"
-              @click="removeGroupLocation(index)">
-              Eliminar
-            </button>
-            <button v-if="groupLocation.editable"
-              class="bg-red-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-full"
-              @click="cancelEditGroupLocation(groupLocation)">
+            <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
+              @click="cancelAddStudentGroup">
               Cancelar
             </button>
           </td>
@@ -143,108 +113,100 @@ import campusdb from "@/services/campusdb";
 export default {
   data() {
     return {
-      fields: ["id", "groupId", "locationId", "entryTime", "exitTime", "action"],
+      fields: ["id", "studentId", "groupId", "action"],
       id: "",
       groupId: "",
       locationId: "",
-      entryTime: "",
-      exitTime: "",
-      groupLocations: [],
-      locations: [],
+      studentGroups: [],
+      students: [],
       groups: [],
-      originalGroupLocation: null,
-      showAddGroupLocationForm: false,
-      newGroupLocation: {
+      originalStudentGroups: null,
+      showAddStudentGroupForm: false,
+      newStudentGroups: {
+        studentId: "",
         groupId: "",
-        locationId: "",
-        entryTime: "",
-        exitTime: "",
-      },
-      timeOptions: [],
+      }
     };
   },
   mounted() {
     this.fetchData();
-    this.generateTimeOptions();
   },
   methods: {
     fetchData() {
       Promise.all([
-        campusdb.getGroupLocations(),
-        campusdb.getLocations(),
+        campusdb.getStudentGroups(),
         campusdb.getGroups(),
+        campusdb.getStudents(),
       ])
-        .then(([groupLocationsRes, locationsRes, groupsRes]) => {
-          this.groupLocations = groupLocationsRes.data;
-          this.locations = locationsRes.data;
+        .then(([studentGroupsRes, groupsRes, studentsRes]) => {
+          this.studentGroups = studentGroupsRes.data;
           this.groups = groupsRes.data;
+          this.students = studentsRes.data;
         })
         .catch((error) => {
           console.error(error);
         });
     },
-    removeGroupLocation(index) {
-      try {
-        if (!confirm("CONFIRMAR: Eliminar ubicación de grupo")) return;
-        const groupLocationId = this.groupLocations[index].id;
-        campusdb.deleteGroupLocation(groupLocationId).then(() => {
-          this.groupLocations.splice(index, 1);
-        });
-      } catch (error) {
-        console.log(error);
-      }
+    getStudentName(studentId) {
+      const student = this.students.find((student) => student.id === studentId);
+      return student ? student.name : "";
     },
     getGroupName(groupId) {
       const group = this.groups.find((group) => group.id === groupId);
       return group ? group.name : "";
     },
-    getLocationName(locationId) {
-      const location = this.locations.find((location) => location.id === locationId);
-      return location ? location.locationName : "";
+    editStudentGroup(studentGroup) {
+      studentGroup.editable = true;
     },
-    addGroupLocation() {
-      const newGroupLocation = {
-        id: this.groupLocations.length + 1,
-        ...this.newGroupLocation,
-        editable: false,
-      };
-      this.groupLocations.unshift(newGroupLocation);
-      campusdb.addGroupLocation(newGroupLocation).then(() => {
-        this.newGroupLocation = {
-          groupId: "",
-          locationId: "",
-          entryTime: "",
-          exitTime: "",
-        };
-        this.showAddGroupLocationForm = false;
-      }).catch((error) => {
-        console.log(error);
-      });
+    cancelEditStudentGroup(studentGroup) {
+      studentGroup.editable = false;
     },
-    editGroupLocation(groupLocation) {
-      this.originalGroupLocation = { ...groupLocation };
-      groupLocation.editable = true;
-    },
-    saveGroupLocation(groupLocation) {
-      campusdb.updateGroupLocation(groupLocation)
+    saveStudentGroup(studentGroup) {
+      console.log(studentGroup);
+      campusdb
+        .updateStudentGroup(studentGroup.id, {
+          studentId: studentGroup.studentId,
+          groupId: studentGroup.groupId,
+        })
         .then(() => {
-          groupLocation.editable = false;
+          studentGroup.editable = false;
         })
         .catch((error) => {
-          console.error("Error al guardar la ubicación de grupo:", error);
+          console.error(error);
         });
     },
-    cancelEditGroupLocation(groupLocation) {
-      Object.assign(groupLocation, this.originalGroupLocation);
-      groupLocation.editable = false;
+    removeStudentGroup(index) {
+      if (!confirm("CONFIRMAR: Eliminar registro")) return;
+      const studentGroup = this.studentGroups[index];
+      campusdb
+        .deleteStudentGroup(studentGroup.id)
+        .then(() => {
+          this.studentGroups.splice(index, 1);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     },
-    generateTimeOptions() {
-      for (let hour = 0; hour < 24; hour++) {
-        for (let minute = 0; minute < 60; minute += 15) {
-          const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:00`;
-          this.timeOptions.push(timeString);
-        }
-      }
+    addStudentGroup() {
+      console.log(this.newStudentGroups);
+      campusdb
+        .addStudentGroup({
+          studentId: this.newStudentGroups.studentId,
+          groupId: this.newStudentGroups.groupId,
+        })
+        .then((res) => {
+          this.studentGroups.push(res.data);
+          window.location.reload()
+          this.cancelAddStudentGroup();
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+    cancelAddStudentGroup() {
+      this.showAddStudentGroupForm = false;
+      this.newStudentGroups.studentId = "";
+      this.newStudentGroups.groupId = "";
     },
   },
 

@@ -60,7 +60,7 @@ GroupStudents.findByStudentId = (studentId, result) => {
     });
 }
 
-GroupStudents.postGroupStudent = (newGroupStudent, result) => {
+GroupStudents.create = (newGroupStudent, result) => {
     conn.query("INSERT INTO GroupStudents SET ?", newGroupStudent, (err, res) => {
         if (err) {
             result(err, null);
@@ -111,6 +111,21 @@ GroupStudents.deleteGroupStudentsByStudentId = (studentId, result) => {
         result(null, res);
     });
 }
+
+GroupStudents.updateById = (groupStudentId, groupStudent, result) => {
+    conn.query("UPDATE GroupStudents SET studentId = ?, groupId = ? WHERE id = ?", [groupStudent.studentId, groupStudent.groupId, groupStudentId], (err, res) => {
+        if (err) {
+            result(err, null);
+            return
+        }
+        if (res.affectedRows == 0) {
+            result({ kind: "not_found" }, null);
+            return
+        }
+        result(null, { id: groupStudentId, ...groupStudent });
+    });
+}
+
 
 
 module.exports = GroupStudents
