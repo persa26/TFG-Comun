@@ -70,27 +70,34 @@
 
           <td class="p-4 text-sm text-gray-700">
             <template v-if="location.editable">
-              <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full mr-2"
+              <button
+                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full mr-2"
                 @click="saveLocation(location)">
                 Guardar
               </button>
+              <button
+                class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
+                @click="cancelEditLocation(location)">
+                Cancelar
+              </button>
             </template>
-            <template v-else>
-              <button class="bg-cyan-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-full mr-2"
+            <template v-if="!location.editable">
+              <button 
+                class="bg-cyan-800 hover:bg-cyan-500 text-white font-bold py-2 px-4 rounded-full mr-2"
                 @click="editLocation(location)">
                 Editar
               </button>
+              <button 
+                class="bg-red-800 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-full mr-2"
+                @click="removeLocation(index)">
+                Eliminar
+              </button>
+              <button 
+                class="bg-green-800 hover:bg-green-500 text-white font-bold py-2 px-4 rounded-full"
+                @click="syncWithIdentificationSystems(location.id)">
+                Sync
+              </button>
             </template>
-            <button v-if="!location.editable"
-              class="bg-red-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-full"
-              @click="removeLocation(index)">
-              Eliminar
-            </button>
-            <button v-if="location.editable"
-              class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
-              @click="cancelEditLocation(location)">
-              Cancelar
-            </button>
           </td>
         </tr>
       </tbody>
@@ -173,6 +180,15 @@ export default {
       Object.assign(location, this.originalLocation);
       location.editable = false;
     },
+    syncWithIdentificationSystems(location) {
+      campusdb.sendSyncData(location)
+        .then(() => {
+          alert("Sincronización con sistemas de identificación completada");
+        })
+        .catch((error) => {
+          console.error("Error sending sync data", error)
+        });
+    }
   },
 };
 </script>

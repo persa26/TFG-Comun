@@ -112,6 +112,7 @@ export default {
     const groups = { id, name };
     return CampusDB.put(`/groups/${id}`, groups);
   },
+
   getLocations() {
     return CampusDB.get("/locations");
   },
@@ -139,10 +140,16 @@ export default {
   addGroupLocation(groupLocation) {
     return CampusDB.post("groupLocations", groupLocation);
   },
+  
   updateGroupLocation(groupLocations) {
     delete groupLocations.editable;
     return CampusDB.put(`/groupLocations/${groupLocations.id}`, groupLocations);
   },
+
+  sendSyncData(locationId) {
+    return CampusDB.get(`/locations/${locationId}/sync`);
+  },
+
   syncData(type) {
     switch (type) {
       case "syncgroupsdatafacerecognition":

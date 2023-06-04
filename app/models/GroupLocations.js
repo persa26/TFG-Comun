@@ -33,6 +33,16 @@ GroupLocations.findById = (groupLocationId, result) => {
     });
 };
 
+GroupLocations.findByLocationId = (locationId, result) => {
+    conn.query("SELECT * FROM GroupLocations WHERE locationId = ?", locationId, (err, res) => {
+        if (err) {
+            result(err, null);
+            return
+        }
+        result(null, res);
+    });
+};
+
 GroupLocations.create = (newGroupLocation, result) => {
     conn.query("INSERT INTO GroupLocations SET ?", newGroupLocation, (err, res) => {
         if (err) {
