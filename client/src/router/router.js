@@ -8,6 +8,7 @@ import GroupsListView from "../views/GroupsListView.vue";
 import IdentificationListView from "../views/IdentificationListView.vue";
 import LocationsListView from "../views/LocationsListView.vue";
 import GroupLocationsListView from "../views/GroupLocationsListView.vue";
+import StudentsGroupsListView from "../views/StudentsGroupsListView.vue";
 
 const routes = [
   {
@@ -55,6 +56,11 @@ const routes = [
     name: "grouplocations",
     component: GroupLocationsListView,
   },
+  {
+    path: "/studentsgroup",
+    name: "studentsgroup",
+    component: StudentsGroupsListView,
+  }
 ];
 
 const router = createRouter({

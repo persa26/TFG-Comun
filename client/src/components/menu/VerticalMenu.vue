@@ -28,6 +28,7 @@ export default {
         { text: 'Grupos', to: '/groups' },
         { text: 'Ubicaciones', to: '/locations' },
         { text: 'Asignación de grupos a localizaciones', to: '/grouplocations' },
+        { text: 'Asignación de estudiantes a grupos', to: '/studentsgroup' },
         { text: 'Identificación', to: '/identification' },
       ],
       isAutenticate: campusdb.getUserLogged() !== undefined,

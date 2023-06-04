@@ -18,13 +18,13 @@ router.get('/students/imageurl/:imageName?', (req, res) => {
 });
 
 router.post('/login', authController.login);
-router.use((request, response, next) => {
-    if (!request.headers.authorization) return response.status(401).json({ success: false, message: 'No token provided' });
-    jwt.verify(request.headers.authorization, 'secret', (err, decoded) => {
-        if (err) return response.status(401).json({ success: false, message: 'Failed to authenticate token.' });
-        next();
-    });
-});
+// router.use((request, response, next) => {
+//     if (!request.headers.authorization) return response.status(401).json({ success: false, message: 'No token provided' });
+//     jwt.verify(request.headers.authorization, 'secret', (err, decoded) => {
+//         if (err) return response.status(401).json({ success: false, message: 'Failed to authenticate token.' });
+//         next();
+//     });
+// });
 
 
 // Users routes
