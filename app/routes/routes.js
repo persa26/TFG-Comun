@@ -8,6 +8,7 @@ const syncController = require('./../controllers/SyncController');
 const locationsController = require('./../controllers/LocationsController');
 const groupLocationsController = require('./../controllers/GroupLocationsController');
 const identificationController = require('./../controllers/IdentificationController');
+const groupStudentsController = require('./../controllers/GroupStudentsController');
 const syncUsersService = require('./../services/SyncUsersService');
 const jwt = require('jsonwebtoken');
 
@@ -81,6 +82,11 @@ router.delete('/groupLocations/:id?', groupLocationsController.deleteGroupLocati
 
 // test images
 
+router.get('/groupStudents', groupStudentsController.getGroupStudents);
+router.get('/groupStudents/:id?', groupStudentsController.getGroupStudent);
+router.post('/groupStudents', groupStudentsController.postGroupStudent);
+router.put('/groupStudents/:id?', groupStudentsController.putGroupStudent);
+router.delete('/groupStudents/:id?', groupStudentsController.deleteGroupStudent);
 
 
 module.exports = router;
