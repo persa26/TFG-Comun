@@ -1,4 +1,5 @@
 const axios = require('axios');
+const config = require('./../config/settings');
 
 const Locations = require("../models/Locations.js");
 const GroupLocations = require("../models/GroupLocations.js");
@@ -24,7 +25,6 @@ function getStudentsInformation(studentsId) {
 
 
 exports.syncUsers = (request, response) => {
-    console.log("//////////////////////////////////////////////////////////////////");
     let locationId = request.params.id;
 
     Locations.findById(locationId, (err, data) => {
@@ -78,25 +78,17 @@ exports.syncUsers = (request, response) => {
                                 data.forEach(groupStudent => {
                                     studentsId.push(groupStudent.studentId);
                                 });
-                                console.log(data);
-                                console.log(locationJson);
                                 
                                 if (locationJson.requireRfid) {
-                                    console.log("rfidRequired");
                                     let studentsInformation = [];
                                 
                                     getStudentsInformation(studentsId)
                                       .then((usersData) => {
-                                        console.log(usersData);
-                                        // Do something with the students' data
-                                
                                         json = {
                                           location: locationJson,
                                           students: usersData,
                                         };
-                                        console.log(json);
-                                        console.log(JSON.stringify(json));
-                                        postRequest("http://127.0.0.1", 5000, "/data", json);
+                                        postRequest(config.syncIPCardID.IP, config.syncIPCardID.port, "/data", json);
 
                                         response.send(json);
                                       })
