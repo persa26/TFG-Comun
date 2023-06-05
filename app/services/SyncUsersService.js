@@ -6,7 +6,6 @@ const GroupLocations = require("../models/GroupLocations.js");
 const GroupStudents = require("../models/GroupStudents.js");
 const StudentsV2 = require("../models/StudentsV2.js");
 const { post } = require("../routes/routes.js");
-const config = require('./../config/settings');
 const http = require('http');
 const conn = require('../db/dbConnection');
 const path = require('path');
@@ -15,19 +14,19 @@ const fs = require('fs');
 
 function getStudentsInformation(studentsId) {
     return new Promise((resolve, reject) => {
-      StudentsV2.findByIds(studentsId, (err, data) => {
-        if (err) {
-          if (err.kind === "not_found") {
-            reject(`Not found student with id ${studentId}.`);
-          } else {
-            reject("Error retrieving student with id " + studentId);
-          }
-        } else {
-          resolve(data);
-        }
-      });
+        StudentsV2.findByIds(studentsId, (err, data) => {
+            if (err) {
+                if (err.kind === "not_found") {
+                    reject(`Not found student with id ${studentId}.`);
+                } else {
+                    reject("Error retrieving student with id " + studentId);
+                }
+            } else {
+                resolve(data);
+            }
+        });
     });
-  }
+}
 
 
 exports.syncUsers = (request, response) => {
@@ -84,47 +83,35 @@ exports.syncUsers = (request, response) => {
                                 data.forEach(groupStudent => {
                                     studentsId.push(groupStudent.studentId);
                                 });
-<<<<<<< HEAD
-                               
 
-=======
-                                
->>>>>>> 191105c4023442bbad84373939a28116c408218b
+
                                 if (locationJson.requireRfid) {
                                     let studentsInformation = [];
-                                
+
                                     getStudentsInformation(studentsId)
-                                      .then((usersData) => {
-                                        json = {
-                                          location: locationJson,
-                                          students: usersData,
-                                        };
-                                        postRequest(config.syncIPCardID.IP, config.syncIPCardID.port, "/data", json);
+                                        .then((usersData) => {
+                                            json = {
+                                                location: locationJson,
+                                                students: usersData,
+                                            };
+                                            postRequest(config.syncIPCardID.IP, config.syncIPCardID.port, "/data", json);
 
-<<<<<<< HEAD
-                                    studentsId.forEach(studentId => {
-                                     
-                                    });
+                                            studentsId.forEach(studentId => {
+
+                                            });
 
 
-                                    json = {
-                                        location: locationJson,
-                                        students: studentsInformation,
-                                    }
-                                    postRequest("http://127.0.0.1", 5000, "/data", JSON.stringify(json));
-                                    response.send(json);
+                                            json = {
+                                                location: locationJson,
+                                                students: studentsInformation,
+                                            }
+                                            postRequest("http://127.0.0.1", 5000, "/data", JSON.stringify(json));
+                                            response.send(json);
 
+                                        });
                                 }
 
-=======
-                                        response.send(json);
-                                      })
-                                      .catch((error) => {
-                                        response.status(404).send({ message: error });
-                                      });
-                                  }
-                                
->>>>>>> 191105c4023442bbad84373939a28116c408218b
+
                                 if (locationJson.requireFacialRecognition) {
                                     json = {
                                         location: locationJson,
@@ -212,19 +199,6 @@ async function getStudentsImageData(response, data) {
 
 // function to make a post request to the server with the json object as body
 function postRequest(url, port, path, json) {
-<<<<<<< HEAD
-    fetch(url + ":" + port + path, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(json)
-    })
-        .then(response => {
-            return response.json();
-        })
-        .then(data => {
-=======
     const requestOptions = {
         method: 'POST',
         url: `${url}:${port}${path}`,
@@ -233,12 +207,11 @@ function postRequest(url, port, path, json) {
         },
         data: json
     };
-  
+
     axios(requestOptions)
         .then(response => {
             console.log(`statusCode: ${response.status}`);
             console.log(response.data);
->>>>>>> 191105c4023442bbad84373939a28116c408218b
         })
         .catch(error => {
             console.error(error);
