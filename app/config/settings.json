@@ -10,7 +10,7 @@
     },
     "syncIPFaceRecognition": {
         "IP": "192.168.227.128",
-        "port": 80
+        "port": 8000
     },
     "syncIPCardID": {
         "IP": "192.168.227.124",

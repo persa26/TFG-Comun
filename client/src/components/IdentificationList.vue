@@ -26,7 +26,7 @@
                 </tr>
             </tbody>
         </table> -->
-        
+
         <table class="w-full mt-4" v-if="accessLogs.length > 0">
             <thead class="bg-gray-50 border-b-2 border-gray-200">
                 <tr>
@@ -49,8 +49,9 @@
                     <td class="p-4 text-sm text-gray-700">{{ item.accesMethod }}</td>
                     <td class="p-4 text-sm text-gray-700">{{ item.accessTime }}</td>
                     <td class="p-4">
-                        
-                        <span v-if="item.canAccess" class="bg-green-800 text-white font-bold py-2 px-4 rounded-full">Aceptado</span>
+
+                        <span v-if="item.canAccess"
+                            class="bg-green-800 text-white font-bold py-2 px-4 rounded-full">Aceptado</span>
                         <span v-else class="bg-red-800 text-white font-bold py-2 px-6 rounded-full">Denegado</span>
                     </td>
                     <td class="p-4 text-sm text-gray-700">{{ item.accessDeniedReason }}</td>
@@ -86,16 +87,16 @@ export default {
                 campusdb.getLocations(),
                 campusdb.getGroups(),
                 campusdb.getStudents(),
-            ])        
-            .then(([accessLogsRes, locationsRes, groupsRes, studentsRes]) => {
-            this.accessLogs = accessLogsRes.data;
-            this.locations = locationsRes.data;
-            this.groups = groupsRes.data;
-            this.students = studentsRes.data;
-            })
-            .catch((error) => {
-            console.error(error);
-            });
+            ])
+                .then(([accessLogsRes, locationsRes, groupsRes, studentsRes]) => {
+                    this.accessLogs = accessLogsRes.data;
+                    this.locations = locationsRes.data;
+                    this.groups = groupsRes.data;
+                    this.students = studentsRes.data;
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
 
         },
         getGroupName(groupId) {
@@ -111,56 +112,5 @@ export default {
             return student ? student.name : "";
         },
     },
-        // async syncStudentsData() {
-        //     this.loading = true;
-        //     await campusdb.syncData("syncstudentsdatafacerecognition");
-        //     await campusdb.syncData("syncimagesdatafacerecognition");
-        //     await campusdb.syncData("syncgroupsdatafacerecognition");
-        //     this.loading = false;
-        // },
-        // async recordAndSendVideo() {
-        //     this.loading = true;
-        //     this.mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
-        //     this.mediaRecorder = new MediaRecorder(this.mediaStream);
-        //     let data = [];
-
-        //     this.mediaRecorder.ondataavailable = event => data.push(event.data);
-        //     this.mediaRecorder.start();
-
-        //     let stopped = new Promise((resolve, reject) => {
-        //         this.mediaRecorder.onstop = resolve;
-        //         this.mediaRecorder.onerror = event => reject(event.name);
-        //     });
-
-        //     setTimeout(() => this.mediaRecorder.stop(), 500);
-
-        //     await stopped;
-
-        //     this.mediaStream.getTracks().forEach(track => track.stop());
-        //     this.mediaStream = null;
-        //     this.mediaRecorder = null;
-
-        //     let blob = new Blob(data, { type: 'video/webm' });
-        //     let file = new File([blob], 'video.webm', {
-        //         type: 'video/webm'
-        //     });
-
-        //     let formData = new FormData();
-        //     formData.append('file', file);
-
-        //     campusdb.faceRecognition(file)
-        //         .then(response => {
-        //             console.log(response);
-        //             let responseObject = JSON.parse(response);
-        //             this.accessLogs.push(...responseObject);
-        //             this.loading = false;
-        //         })
-        //         .catch(error => {
-        //             console.log(error);
-        //             this.loading = false;
-        //         });
-
-        // },
-    // },
 };
 </script>

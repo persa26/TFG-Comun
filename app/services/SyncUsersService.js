@@ -2,7 +2,12 @@ const Locations = require("../models/Locations.js");
 const GroupLocations = require("../models/GroupLocations.js");
 const GroupStudents = require("../models/GroupStudents.js");
 const StudentsV2 = require("../models/StudentsV2.js");
-
+const { post } = require("../routes/routes.js");
+const config = require('./../config/settings');
+const http = require('http');
+const conn = require('../db/dbConnection');
+const path = require('path');
+const fs = require('fs');
 
 const getStudentInformation = (studentId) => {
     return new Promise((resolve, reject) => {
@@ -22,7 +27,6 @@ const getStudentInformation = (studentId) => {
 
 
 exports.syncUsers = (request, response) => {
-    console.log("//////////////////////////////////////////////////////////////////");
     let locationId = request.params.id;
 
     Locations.findById(locationId, (err, data) => {
@@ -60,7 +64,7 @@ exports.syncUsers = (request, response) => {
                         data.forEach(groupLocation => {
                             groupIds.push(groupLocation.groupId);
                         });
-                        GroupStudents.findByGroupIds(groupIds, (err, data) => {
+                        GroupStudents.findByGroupIds(groupIds, async (err, data) => {
                             if (err) {
                                 if (err.kind === "not_found") {
                                     response.status(404).send({
@@ -76,76 +80,125 @@ exports.syncUsers = (request, response) => {
                                 data.forEach(groupStudent => {
                                     studentsId.push(groupStudent.studentId);
                                 });
-                                console.log(data);
-                                console.log(locationJson);
-                                
+                               
+
                                 if (locationJson.requireRfid) {
-                                    console.log("rfidRequired");
                                     let studentsInformation = [];
 
                                     studentsId.forEach(studentId => {
-                                        console.log(studentId);
-                                        // getStudentInformation(studentId)
-                                        // .then((data) => {
-                                        //     studentsInformation.push(data);
-                                        // })
-                                        // .catch((error) => {
-                                        //     return response.status(404).send({ message: error });
-                                        // });
+                                     
                                     });
-                        
+
 
                                     json = {
                                         location: locationJson,
                                         students: studentsInformation,
                                     }
-                                    console.log(json);
-                                    console.log("rfidRequired");
                                     postRequest("http://127.0.0.1", 5000, "/data", JSON.stringify(json));
                                     response.send(json);
-                                    
+
                                 }
-                                
+
                                 if (locationJson.requireFacialRecognition) {
                                     json = {
                                         location: locationJson,
                                         students: studentsId,
                                     }
-
-                                    console.log("facialRecognitionRequired");
-                                    // postRequest("localhost", 3000, JSON.stringify(json));
-                                } 
-                                
-                                
-                                // retrieve post status
-                                
+                                    json = JSON.stringify(json);
+                                    const postData = await getStudentsImageData(response, json);
+                                    try {
+                                        await syncUsersFaceRecognition(response, "/syncusersdata", json);
+                                        await syncUsersFaceRecognition(response, "/syncimagesdata", postData);
+                                        response.send(json);
+                                    } catch (error) {
+                                        response.status(500).json({ success: false, message: "Error syncing data with Face Recognition System" });
+                                    }
+                                }
                             }
                         });
                     }
                 });
-                
+
             }
         }
     });
 };
 
+function syncUsersFaceRecognition(response, endpoint, dataToSend) {
+    const options = {
+        hostname: config.syncIPFaceRecognition.IP,
+        port: config.syncIPFaceRecognition.port,
+        path: endpoint,
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': dataToSend.length,
+        }
+    };
+    const postReq = http.request(options, (postRes) => {
+        let data = '';
+        postRes.on('data', (chunk) => {
+            data += chunk;
+        });
+        postRes.on('end', () => {
+            return
+        });
+    });
+
+    postReq.on('error', (error) => {
+        response.status(500).json({ success: false, message: "Error syncing data with Face Recognition System" });
+    });
+
+    postReq.write(dataToSend);
+    postReq.end();
+}
+
+async function getStudentsImageData(response, data) {
+    data = JSON.parse(data);
+    studentsIds = data.students.join(',');
+
+    return new Promise((resolve, reject) => {
+
+        let query = `SELECT * FROM StudentsImage WHERE studentId IN (${studentsIds})`;
+        conn.query(query, (err, rows) => {
+            if (!rows) {
+                return response.status(404).json({ success: false, message: 'No student images found' });
+            }
+            const mappedData = rows.map(row => {
+                const { id, studentId, imageLocation } = row;
+                const imagePath = path.join(__dirname, '..', '..', 'app', 'idImages', imageLocation);
+
+                const imageBuffer = fs.readFileSync(imagePath);
+                const imageBase64 = imageBuffer.toString('base64');
+                return { id: id, studentId: studentId, image: imageBase64 };
+            });
+            resolve(JSON.stringify(mappedData));
+        });
+    });
+}
+
+
+
+
+
+
+
+
 // function to make a post request to the server with the json object as body
 function postRequest(url, port, path, json) {
     fetch(url + ":" + port + path, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(json)
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(json)
     })
-      .then(response => {
-        console.log(`statusCode: ${response.status}`);
-        return response.json();
-      })
-      .then(data => {
-        console.log(data);
-      })
-      .catch(error => {
-        console.error(error);
-      });
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+        })
+        .catch(error => {
+            console.error(error);
+        });
 }
