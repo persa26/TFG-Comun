@@ -67,6 +67,36 @@ CREATE TABLE GroupLocations(
     PRIMARY KEY(id)
 );
 
+CREATE TABLE Access(
+    id int NOT NULL AUTO_INCREMENT,
+    studentId int NOT NULL,
+    groupId int NOT NULL,
+    locationId int NOT NULL,
+    facialRecognition BOOL NOT NULL,
+    rfid BOOL NOT NULL,
+    accessTime time NOT NULL,
+    FOREIGN KEY (studentId) REFERENCES Students(id),
+    FOREIGN KEY (groupId) REFERENCES `Groups`(id),
+    FOREIGN KEY (locationId) REFERENCES Locations(id),
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE AccessLogs(
+    id int NOT NULL AUTO_INCREMENT,
+    studentId int NOT NULL,
+    groupId int,
+    locationId int NOT NULL,
+    accesMethod varchar(50) NOT NULL,
+    accessTime time NOT NULL,
+    canAccess BOOL NOT NULL,
+    accessDeniedReason varchar(250),
+    FOREIGN KEY (studentId) REFERENCES Students(id),
+    FOREIGN KEY (groupId) REFERENCES `Groups`(id),
+    FOREIGN KEY (locationId) REFERENCES Locations(id),
+    PRIMARY KEY(id)
+);
+
+
 -- Create inserts for the tables
 INSERT INTO
     SystemUsers (

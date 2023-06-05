@@ -2,17 +2,17 @@
 const GroupStudents = require('../models/GroupStudents');
 const GroupLocations = require('../models/GroupLocations');
 const Locations = require('../models/Locations');
+const AccessLogs = require('../models/AccessLogs');
+const { create } = require('../models/Groups');
 
 // Creamos una función auxiliar que devuelve una promesa
 const getLocation = (locationId) => {
     return new Promise((resolve, reject) => {
         Locations.findById(locationId, (err, data) => {
             if (err) {
-            console.log("not existsLocation");
-            reject(`Not found location with id ${locationId}.`);
+                reject(`Not found location with id ${locationId}.`);
             } else {
-            console.log("existsLocation");
-            resolve(data);
+                resolve(data);
             }
         });
     });
@@ -58,6 +58,24 @@ const getStudentGroups = (studentId) => {
     });
 };
 
+const createAccessLog = (studentId, groupId, locationId, accesMethod, canAccess, accessDeniedReason) => {
+    let accessLog = {
+        studentId: studentId,
+        groupId: groupId,
+        locationId: locationId,
+        accesMethod: accesMethod,
+        accessTime: new Date(),
+        canAccess: canAccess,
+        accessDeniedReason: accessDeniedReason,
+    };
+    AccessLogs.create(accessLog, (err, data) => {
+        if (err) {
+            console.log(err);
+        }
+    });
+
+};
+
 
 
 exports.userCanAccess = (request, response) => {
@@ -65,53 +83,48 @@ exports.userCanAccess = (request, response) => {
     let locationId = request.params.locationId;
     let accesMethod = request.params.accesMethod; // RFID OR FACIAL
     let canAccess = false;
-    console.log("///////////////////////////////////////////////////////////////////////////////////////////")
-    console.log("Intenta acceder con el metodo " + accesMethod);
-
-    // Llamamos a la función auxiliar y manejamos la promesa resultante
+    
     getLocation(locationId)
     .then((data) => {
-        // Existe la localización
-        console.log(data);
-        console.log(accesMethod);
-        // Comprobamos que se pueda acceder por el método indicado
+        
         if ((accesMethod === "rfid" && data.rfidRequired === 0) || (accesMethod == "FACIAL" && data.facialRecognitionRequired === 0)) {
-            console.log("No se puede acceder por este metodo");
+            createAccessLog(studentId, null, locationId, accesMethod, canAccess, "No se puede acceder por este metodo");
             return response.status(500).send(false);
         }
-
-        // Buscamos los grupos asociados a la localización
+        
         getGroupIds(locationId)
         .then((data) => {
 
             let locationGroupsIds = [];
             data.forEach(groupLocation => {
-                // Comprueba que en la ubicación hay grupos a los que se pueda acceder a la hora actual
+                
                 if(isInTimeRange(groupLocation.entryTime, groupLocation.exitTime)) {
                     locationGroupsIds.push(groupLocation.groupId);
                 }
             });
-
-            // Si no hay id, no hay grupos a los que se pueda acceder por lo que no se puede acceder y devolvemos false
+            
             if (locationGroupsIds.length === 0) {
-                console.log("El usuario no tiene grupos con los que pueda acceder");
+                createAccessLog(studentId, null, locationId, accesMethod, canAccess, "No hay ubicaciones a las que se pueda acceder con los grupos del usuario en esta hora");
                 return response.status(500).send(false);
             }
             
-            // Buscamos los grupos asociados al estudiante y los compara con los grupos de la localización
-            // Si el estudiante pertenece a alguno de los grupos de la localización, puede acceder
-            // Si no, no puede acceder
             getStudentGroups(studentId)
             .then((data) => {
 
                 data.forEach(groupStudent => {
                     if (locationGroupsIds.includes(groupStudent.groupId)) {
-                        console.log("El estudiante puede acceder por pertenecer al grupo " + groupStudent.groupId);
                         canAccess = true;
+                        createAccessLog(studentId, groupStudent.groupId, locationId, accesMethod, canAccess, null);
                     }    
                 });
-                // Crear un json con canAccess y con algo indicando si falta el rfid o la cara. Hay que consultar en una nueva tabla...
-                return response.status(200).send(canAccess);
+                
+                if (canAccess == false) {
+                    createAccessLog(studentId, null, locationId, accesMethod, canAccess, "El estudiante no pertenece a ningún grupo de esta ubicación");
+                    return response.status(500).send(canAccess);
+                } else {
+                    createAccessLog(studentId, null, locationId, accesMethod, canAccess, null);
+                    return response.status(200).send(canAccess);
+                }
             })
             .catch((error) => {
                 return response.status(404).send({ message: error });
