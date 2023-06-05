@@ -77,7 +77,6 @@ const createAccessLog = (studentId, groupId, locationId, accesMethod, canAccess,
 };
 
 
-
 exports.userCanAccess = (request, response) => {
     let studentId = request.params.studentId;
     let locationId = request.params.locationId;
