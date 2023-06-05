@@ -88,7 +88,7 @@ exports.userCanAccess = (request, response) => {
         
         if ((accesMethod === "rfid" && data.rfidRequired === 0) || (accesMethod == "FACIAL" && data.facialRecognitionRequired === 0)) {
             createAccessLog(studentId, null, locationId, accesMethod, canAccess, "No se puede acceder por este metodo");
-            return response.status(500).send(false);
+            return response.status(500).send({'canAccess': false});
         }
         
         getGroupIds(locationId)
@@ -104,7 +104,7 @@ exports.userCanAccess = (request, response) => {
             
             if (locationGroupsIds.length === 0) {
                 createAccessLog(studentId, null, locationId, accesMethod, canAccess, "No hay ubicaciones a las que se pueda acceder con los grupos del usuario en esta hora");
-                return response.status(500).send(false);
+                return response.status(500).send({'canAccess': false});
             }
             
             getStudentGroups(studentId)
@@ -117,11 +117,12 @@ exports.userCanAccess = (request, response) => {
                     }
                 });
                 
+
                 if (canAccess == false) {
                     createAccessLog(studentId, null, locationId, accesMethod, canAccess, "El estudiante no pertenece a ningún grupo de esta ubicación");
-                    return response.status(500).send(canAccess);
+                    return response.status(500).send({'canAccess': false});
                 } else {
-                    return response.status(200).send(canAccess);
+                    return response.status(200).send({'canAccess': true});
                 }
             })
             .catch((error) => {

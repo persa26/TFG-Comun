@@ -1,3 +1,6 @@
+const axios = require('axios');
+const config = require('./../config/settings');
+
 const Locations = require("../models/Locations.js");
 const GroupLocations = require("../models/GroupLocations.js");
 const GroupStudents = require("../models/GroupStudents.js");
@@ -9,21 +12,22 @@ const conn = require('../db/dbConnection');
 const path = require('path');
 const fs = require('fs');
 
-const getStudentInformation = (studentId) => {
+
+function getStudentsInformation(studentsId) {
     return new Promise((resolve, reject) => {
-        StudentsV2.findById(studentId, (err, data) => {
-            if (err) {
-                if (err.kind === "not_found") {
-                    reject(`Not found student with id ${studentId}.`);
-                } else {
-                    reject("Error retrieving student with id " + studentId);
-                }
-            } else {
-                resolve(data);
-            }
-        });
+      StudentsV2.findByIds(studentsId, (err, data) => {
+        if (err) {
+          if (err.kind === "not_found") {
+            reject(`Not found student with id ${studentId}.`);
+          } else {
+            reject("Error retrieving student with id " + studentId);
+          }
+        } else {
+          resolve(data);
+        }
+      });
     });
-};
+  }
 
 
 exports.syncUsers = (request, response) => {
@@ -80,11 +84,24 @@ exports.syncUsers = (request, response) => {
                                 data.forEach(groupStudent => {
                                     studentsId.push(groupStudent.studentId);
                                 });
+<<<<<<< HEAD
                                
 
+=======
+                                
+>>>>>>> 191105c4023442bbad84373939a28116c408218b
                                 if (locationJson.requireRfid) {
                                     let studentsInformation = [];
+                                
+                                    getStudentsInformation(studentsId)
+                                      .then((usersData) => {
+                                        json = {
+                                          location: locationJson,
+                                          students: usersData,
+                                        };
+                                        postRequest(config.syncIPCardID.IP, config.syncIPCardID.port, "/data", json);
 
+<<<<<<< HEAD
                                     studentsId.forEach(studentId => {
                                      
                                     });
@@ -99,6 +116,15 @@ exports.syncUsers = (request, response) => {
 
                                 }
 
+=======
+                                        response.send(json);
+                                      })
+                                      .catch((error) => {
+                                        response.status(404).send({ message: error });
+                                      });
+                                  }
+                                
+>>>>>>> 191105c4023442bbad84373939a28116c408218b
                                 if (locationJson.requireFacialRecognition) {
                                     json = {
                                         location: locationJson,
@@ -186,6 +212,7 @@ async function getStudentsImageData(response, data) {
 
 // function to make a post request to the server with the json object as body
 function postRequest(url, port, path, json) {
+<<<<<<< HEAD
     fetch(url + ":" + port + path, {
         method: 'POST',
         headers: {
@@ -197,6 +224,21 @@ function postRequest(url, port, path, json) {
             return response.json();
         })
         .then(data => {
+=======
+    const requestOptions = {
+        method: 'POST',
+        url: `${url}:${port}${path}`,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: json
+    };
+  
+    axios(requestOptions)
+        .then(response => {
+            console.log(`statusCode: ${response.status}`);
+            console.log(response.data);
+>>>>>>> 191105c4023442bbad84373939a28116c408218b
         })
         .catch(error => {
             console.error(error);
