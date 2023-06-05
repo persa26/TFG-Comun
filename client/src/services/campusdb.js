@@ -169,6 +169,10 @@ export default {
     return CampusDB.get(`/locations/${locationId}/sync`);
   },
 
+  getAccessLogs() {
+    return CampusDB.get("/access/logs");
+  },
+
   // syncData(type) {
   //   switch (type) {
   //     case "syncgroupsdatafacerecognition":

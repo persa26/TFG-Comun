@@ -11,6 +11,7 @@ const identificationController = require('./../controllers/IdentificationControl
 const groupStudentsController = require('./../controllers/GroupStudentsController');
 const syncUsersService = require('./../services/SyncUsersService');
 const userCanAccessService = require('./../services/UserCanAccessService');
+const accessLogsController = require('./../controllers/AccessLogsController');
 const jwt = require('jsonwebtoken');
 
 const path = require('path');
@@ -74,8 +75,11 @@ router.delete('/locations/:id?', locationsController.deleteLocation);
 // Sync user data
 router.get('/locations/:id/sync', syncUsersService.syncUsers);
 
-// Sync user data
+// Can access service
 router.get('/students/:studentId/locations/:locationId/access/:accesMethod', userCanAccessService.userCanAccess);
+
+// Access logs
+router.get('/access/logs', accessLogsController.getAccessLogs);
 
 // GroupLocations routes
 router.get('/groupLocations', groupLocationsController.getGroupLocations);

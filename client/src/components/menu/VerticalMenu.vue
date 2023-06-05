@@ -23,7 +23,7 @@ export default {
     return {
       items: [
         { text: 'Home', to: '/' },
-        { text: 'Admin', to: '/users' },
+        { text: 'Users', to: '/users' },
         { text: 'Estudiantes', to: '/students' },
         { text: 'Grupos', to: '/groups' },
         { text: 'Ubicaciones', to: '/locations' },
