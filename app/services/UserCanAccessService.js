@@ -115,14 +115,13 @@ exports.userCanAccess = (request, response) => {
                     if (locationGroupsIds.includes(groupStudent.groupId)) {
                         canAccess = true;
                         createAccessLog(studentId, groupStudent.groupId, locationId, accesMethod, canAccess, null);
-                    }    
+                    }
                 });
                 
                 if (canAccess == false) {
                     createAccessLog(studentId, null, locationId, accesMethod, canAccess, "El estudiante no pertenece a ningún grupo de esta ubicación");
                     return response.status(500).send(canAccess);
                 } else {
-                    createAccessLog(studentId, null, locationId, accesMethod, canAccess, null);
                     return response.status(200).send(canAccess);
                 }
             })
