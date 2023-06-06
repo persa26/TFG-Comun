@@ -9,11 +9,11 @@
         "database": "campusdb"
     },
     "syncIPFaceRecognition": {
-        "IP": "192.168.227.128",
+        "IP": "192.168.32.142",
         "port": 8000
     },
     "syncIPCardID": {
-        "IP": "http://127.0.0.1",
+        "IP": "http://192.168.170.68",
         "port": 5000
     }
 }

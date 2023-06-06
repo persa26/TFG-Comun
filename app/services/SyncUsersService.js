@@ -96,18 +96,10 @@ exports.syncUsers = (request, response) => {
                                             };
                                             postRequest(config.syncIPCardID.IP, config.syncIPCardID.port, "/data", json);
 
-                                            studentsId.forEach(studentId => {
-
-                                            });
-
-
-                                            json = {
-                                                location: locationJson,
-                                                students: studentsInformation,
-                                            }
-                                            postRequest("http://127.0.0.1", 5000, "/data", JSON.stringify(json));
                                             response.send(json);
-
+                                        })
+                                        .catch((error) => {
+                                            response.status(404).send({ message: error });
                                         });
                                 }
 
@@ -118,10 +110,16 @@ exports.syncUsers = (request, response) => {
                                         students: studentsId,
                                     }
                                     json = JSON.stringify(json);
-                                    const postData = await getStudentsImageData(response, json);
+                                    // const postData = await getStudentsImageData(response, json);
                                     try {
-                                        await syncUsersFaceRecognition(response, "/syncusersdata", json);
-                                        await syncUsersFaceRecognition(response, "/syncimagesdata", postData);
+                                        // syncUsersFaceRecognition(response, "/syncusersdata", json);
+                                        // syncUsersFaceRecognition(response, "/syncimagesdata", postData);
+
+                                        await syncUsersFaceRecognition(response, "/syncusersdata", json); // Wait for the first request to finish
+
+                                        const postData = await getStudentsImageData(response, json);
+                                        await syncUsersFaceRecognition(response, "/syncimagesdata", postData); // Wait for the second request to finish
+
                                         response.send(json);
                                     } catch (error) {
                                         response.status(500).json({ success: false, message: "Error syncing data with Face Recognition System" });
