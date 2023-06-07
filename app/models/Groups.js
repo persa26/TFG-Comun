@@ -81,22 +81,29 @@ Groups.updateById = (id, group, result) => {
 Groups.remove = (id, result) => {
     conn.query("DELETE FROM GroupLocations WHERE groupId = ?", id, (err, res) => {
         if (err) {
+            console.log("err1: ", err);
             result(null, err);
             return
+        } else {
+            conn.query("DELETE FROM GroupStudents WHERE groupId = ?", id, (err, res) => {
+                if (err) {
+                    console.log("err1: ", err);
+                    result(null, err);
+                    return
+                } else {
+                    conn.query("DELETE FROM `Groups` WHERE id = ?", id, (err, res) => {
+                        if (err) {
+                            console.log("err2: ", err);
+                            result(null, err);
+                            return
+                        }
+                    });
+                }
+            });
         }
-        if (res.affectedRows == 0) {
-            result({ kind: "not_found" }, null);
-            return
-        }
-        conn.query("DELETE FROM `Groups` WHERE id = ?", id, (err, res) => {
-            if (err) {
-                result(null, err);
-                return
-            }
-            result(null, res);
-        });
     });
 };
+
 
 
 module.exports = Groups
