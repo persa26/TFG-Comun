@@ -110,16 +110,11 @@ exports.syncUsers = (request, response) => {
                                         students: studentsId,
                                     }
                                     json = JSON.stringify(json);
-                                    // const postData = await getStudentsImageData(response, json);
                                     try {
-                                        // syncUsersFaceRecognition(response, "/syncusersdata", json);
-                                        // syncUsersFaceRecognition(response, "/syncimagesdata", postData);
-
-                                        await syncUsersFaceRecognition(response, "/syncusersdata", json); // Wait for the first request to finish
-
+                                        const syncUsersPromise = syncUsersFaceRecognition(response, "/syncusersdata", json);
                                         const postData = await getStudentsImageData(response, json);
-                                        await syncUsersFaceRecognition(response, "/syncimagesdata", postData); // Wait for the second request to finish
-
+                                        await syncUsersPromise;
+                                        await syncUsersFaceRecognition(response, "/syncimagesdata", postData);
                                         response.send(json);
                                     } catch (error) {
                                         response.status(500).json({ success: false, message: "Error syncing data with Face Recognition System" });
@@ -136,32 +131,36 @@ exports.syncUsers = (request, response) => {
 };
 
 function syncUsersFaceRecognition(response, endpoint, dataToSend) {
-    const options = {
-        hostname: config.syncIPFaceRecognition.IP,
-        port: config.syncIPFaceRecognition.port,
-        path: endpoint,
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': dataToSend.length,
-        }
-    };
-    const postReq = http.request(options, (postRes) => {
-        let data = '';
-        postRes.on('data', (chunk) => {
-            data += chunk;
+    return new Promise((resolve, reject) => {
+        const options = {
+            hostname: config.syncIPFaceRecognition.IP,
+            port: config.syncIPFaceRecognition.port,
+            path: endpoint,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': dataToSend.length,
+            }
+        };
+        const postReq = http.request(options, (postRes) => {
+            let data = '';
+            postRes.on('data', (chunk) => {
+                data += chunk;
+            });
+            postRes.on('end', () => {
+                resolve();
+            });
         });
-        postRes.on('end', () => {
-            return
+
+        postReq.on('error', (error) => {
+            reject(error);
+            // response.status(500).json({ success: false, message: "Error syncing data with Face Recognition System" });
         });
+
+        postReq.write(dataToSend);
+        postReq.end();
     });
 
-    postReq.on('error', (error) => {
-        response.status(500).json({ success: false, message: "Error syncing data with Face Recognition System" });
-    });
-
-    postReq.write(dataToSend);
-    postReq.end();
 }
 
 async function getStudentsImageData(response, data) {
