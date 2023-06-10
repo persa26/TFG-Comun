@@ -146,26 +146,22 @@ exports.userCanAccess = (request, response) => {
 
 function isInTimeRange(startTime, endTime) {
     const currentDate = new Date();
-  
+
     // Parseamos las horas de inicio y fin
     const [startHour, startMinutes, startSeconds] = startTime.split(":");
     const [endHour, endMinutes, endSeconds] = endTime.split(":");
-  
+
     // Creamos objetos Date para las horas de inicio y fin
     const startDate = new Date();
     startDate.setHours(startHour);
     startDate.setMinutes(startMinutes);
     startDate.setSeconds(startSeconds);
-  
+
     const endDate = new Date();
     endDate.setHours(endHour);
     endDate.setMinutes(endMinutes);
     endDate.setSeconds(endSeconds);
-  
+
     // Comprobamos si la hora actual está entre las horas de inicio y fin
-    if (currentDate >= startDate && currentDate <= endDate) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+    return !!(currentDate >= startDate && currentDate <= endDate);
+}

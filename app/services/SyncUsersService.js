@@ -86,7 +86,6 @@ exports.syncUsers = (request, response) => {
 
 
                                 if (locationJson.requireRfid) {
-                                    let studentsInformation = [];
 
                                     getStudentsInformation(studentsId)
                                         .then((usersData) => {

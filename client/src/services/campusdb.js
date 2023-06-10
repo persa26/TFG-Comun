@@ -173,30 +173,13 @@ export default {
     return CampusDB.get("/access/logs");
   },
 
-  // syncData(type) {
-  //   switch (type) {
-  //     case "syncgroupsdatafacerecognition":
-  //       return CampusDB.get("/syncgroupsdatafacerecognition");
-  //     case "syncimagesdatafacerecognition":
-  //       return CampusDB.get("/syncimagesdatafacerecognition");
-  //     case "syncstudentsdatafacerecognition":
-  //       return CampusDB.get("/syncstudentsdatafacerecognition");
-  //     default:
-  //   }
-  // },
-  // faceRecognition(file) {
-  //   let formData = new FormData();
-  //   formData.append('file', file);
 
-  //   return CampusDB.post('/facerecognition', formData, {
-  //     headers: {
-  //       'Content-Type': 'multipart/form-data',
-  //     },
-  //   })
-  //     .then(response => response.data)
-  //     .catch(error => {
-  //       throw error;
-  //     });
-  // }
+  getConfig() {
+    return CampusDB.get("/config");
+  },
+  updateConfig(config) {
+    console.log(config);
+    return CampusDB.put("/config", config);
+  },
 
 };
