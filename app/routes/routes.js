@@ -12,6 +12,7 @@ const groupStudentsController = require('./../controllers/GroupStudentsControlle
 const syncUsersService = require('./../services/SyncUsersService');
 const userCanAccessService = require('./../services/UserCanAccessService');
 const accessLogsController = require('./../controllers/AccessLogsController');
+const configController = require('./../controllers/ConfigController');
 const jwt = require('jsonwebtoken');
 
 const path = require('path');
@@ -95,6 +96,12 @@ router.get('/groupStudents/:id?', groupStudentsController.getGroupStudent);
 router.post('/groupStudents', groupStudentsController.create);
 router.put('/groupStudents/:id?', groupStudentsController.putGroupStudent);
 router.delete('/groupStudents/:id?', groupStudentsController.deleteGroupStudent);
+
+
+// config file
+
+router.get('/config', configController.getConfig);
+router.put('/config', configController.updateSyncIP);
 
 
 module.exports = router;

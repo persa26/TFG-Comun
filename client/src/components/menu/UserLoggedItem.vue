@@ -37,12 +37,6 @@
 <script>
 import campusdb from "@/services/campusdb";
 export default {
-  props: {
-    post: {
-      type: Object,
-      required: true,
-    },
-  },
   data() {
     return {
       // Get user from store
