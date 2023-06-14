@@ -1,8 +1,10 @@
 <template>
-  <UserItem v-if="isAutenticate" />
-  <ul>
-    <menu-item v-for="item in items" :key="item.text" :item="item"></menu-item>
-  </ul>
+  <div>
+    <UserItem v-if="isAutenticate" />
+    <ul class="mt-4">
+      <menu-item v-for="item in items" :key="item.text" :item="item"></menu-item>
+    </ul>
+  </div>
 </template>
 
 <style>
@@ -10,6 +12,7 @@
   white-space: pre-line;
 }
 </style>
+
 
 <script>
 import MenuItem from './MenuItem.vue';

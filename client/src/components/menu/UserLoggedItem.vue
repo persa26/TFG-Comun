@@ -1,9 +1,9 @@
 <template>
-  <div class="flex items-center justify-end">
+  <div class="flex items-center justify-start mr-20 pb-6">
     <div class="relative">
       <p v-if="user.photo">
         <img
-          v-bind:src="'http://localhost:3080/' + user.photo"
+          v-bind:src="user.photo"
           alt="avatar"
           class="rounded-full h-12 w-12 mr-2"
         />
@@ -13,12 +13,7 @@
           src="https://i.pravatar.cc/100"
           alt="avatar"
           class="rounded-full h-12 w-12 mr-2"
-          style="
-            max-width: 50px;
-            max-height: 50px;
-            width: auto;
-            height: auto;
-          "
+          style="max-width: 50px; max-height: 50px; width: auto; height: auto;"
         />
       </p>
     </div>
@@ -37,6 +32,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import campusdb from "@/services/campusdb";

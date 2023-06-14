@@ -114,7 +114,7 @@ VALUES
         'pear',
         "YWRtaW4=",
         'admin@mail.com',
-        '/img/admin.png',
+        'https://i.pravatar.cc/150?img=12',
         1,
         1655074399
     );

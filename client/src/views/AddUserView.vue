@@ -1,6 +1,6 @@
 <template>
   <div class="register">
-    <AddUserItem />
+    <AddUserItem/>
   </div>
 </template>
 
