@@ -1,6 +1,6 @@
 <template>
     <div id="app" class="users">
-        <h1 class="text-4xl font-bold text-gray-800">Identificación</h1>
+        <h1 class="text-4xl font-bold text-gray-800 mb-7">Identificación</h1>
         <table class="w-full mt-4" v-if="accessLogs.length > 0">
             <thead class="bg-gray-50 border-b-2 border-gray-200">
                 <tr>
